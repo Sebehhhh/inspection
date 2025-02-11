@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('indicators', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('equipment_id')->constrained('equipment')->onDelete('cascade'); // Foreign key ke equipment
+            $table->foreignId('equipment_id')->constrained('equipments')->onDelete('cascade'); // Foreign key ke equipment
             $table->string('name'); // Nama indikator
             $table->string('unit')->nullable(); // Satuan indikator (°C, bar, dll.)
             $table->timestamps();

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('problems', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('equipment_id')->constrained('equipment')->onDelete('cascade'); // Foreign key ke equipment
+            $table->foreignId('equipment_id')->constrained('equipments')->onDelete('cascade'); // Foreign key ke equipment
             $table->foreignId('parent_problem_id')->nullable()->constrained('problems')->onDelete('cascade'); // Sub-kategori dari masalah utama
             $table->string('name'); // Nama penyebab kehilangan panas
             $table->timestamps();

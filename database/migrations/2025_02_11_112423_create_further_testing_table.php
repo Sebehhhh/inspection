@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('further_testing', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('problem_id');
+            $table->unsignedBigInteger('problem_id')->constrained('problems')->onDelete('cascade');
             // Menyimpan metode pengujian lanjutan
             $table->string('further_testing_method');
             $table->timestamps();

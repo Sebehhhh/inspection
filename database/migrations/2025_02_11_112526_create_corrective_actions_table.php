@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('corrective_actions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('problem_id');
+            $table->unsignedBigInteger('problem_id')->constrained('problems')->onDelete('cascade');
             $table->string('corrective_action');
             $table->timestamps();
         });

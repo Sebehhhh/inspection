@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('equipment_indicator_values', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('equipment_id');
-            $table->unsignedBigInteger('indicator_id');
+            $table->unsignedBigInteger('equipment_id')->constrained('equipments')->onDelete('cascade');
+            $table->unsignedBigInteger('indicator_id')->constrained('indicators')->onDelete('cascade');
             // Menyimpan nilai baseline dan real, gunakan tipe decimal sesuai kebutuhan presisi
             $table->decimal('baseline', 8, 2);
             $table->decimal('real', 8, 2);
