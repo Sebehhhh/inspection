@@ -50,7 +50,15 @@
                         <i class="bi bi-hdd-fill"></i>
                         <span>Equipment</span>
                     </a>
-                </li>                
+                </li>  
+                
+                <li class="sidebar-item {{ request()->routeIs('indicator.index') ? 'active' : '' }}">
+                    <a href="{{ route('indicator.index') }}" class="sidebar-link">
+                        <i class="bi bi-bar-chart"></i>
+                        <span>Indicator</span>
+                    </a>
+                </li>
+                
 
                 <li class="sidebar-item">
                     <a href="{{ route('logout') }}" class='sidebar-link'
