@@ -27,8 +27,7 @@ class EquipmentController extends Controller
         ]);
 
         Equipment::create($request->all());
-
-        return redirect()->route('equipment.index');
+        return redirect()->route('equipment.index')->with('success', 'Equipment created successfully.');
     }
 
     public function edit($encryptedId)
@@ -47,12 +46,12 @@ class EquipmentController extends Controller
 
         $equipment->update($request->all());
 
-        return redirect()->route('equipment.index');
+        return redirect()->route('equipment.index')->with('success', 'Equipment updated successfully.');;
     }
 
     public function destroy(Equipment $equipment)
     {
         $equipment->delete();
-        return redirect()->route('equipment.index');
+        return redirect()->route('equipment.index')->with('success', 'Equipment deleted successfully.');;
     }
 }
