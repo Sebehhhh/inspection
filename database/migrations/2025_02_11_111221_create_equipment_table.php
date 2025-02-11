@@ -12,8 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('equipment', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id(); // Primary key
+            $table->string('name')->unique(); // Nama unit alat, unik
+            $table->text('description')->nullable(); // Deskripsi unit alat
+            $table->timestamps(); // Menyimpan created_at dan updated_at
         });
     }
 
