@@ -37,8 +37,8 @@
                                         <thead>
                                             <tr>
                                                 <th>No.</th>
-                                                <th>Name</th>
                                                 <th>Equipment</th>
+                                                <th>Name</th>
                                                 <th>Unit</th>
                                                 <th>Action</th>
                                             </tr>
@@ -47,8 +47,8 @@
                                             @foreach($indicators as $index => $indicator)
                                             <tr>
                                                 <td class="text-bold-500">{{ $index + 1 }}</td>
-                                                <td class="text-bold-500">{{ $indicator->name }}</td>
                                                 <td>{{ $indicator->equipment->name }}</td>
+                                                <td class="text-bold-500">{{ $indicator->name }}</td>
                                                 <td>{{ $indicator->unit }}</td>
                                                 <td>
                                                     <a href="{{ route('indicator.edit', \Illuminate\Support\Facades\Crypt::encrypt($indicator->id)) }}" class="btn btn-primary btn-sm">

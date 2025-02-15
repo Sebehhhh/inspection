@@ -26,7 +26,6 @@
                         <p style="margin: 0; font-size: 16px;">{{ $user->name }}</p>
                         <p style="margin: 0; font-size: 14px;">{{ $user->email }}</p>
                     </div>
-
                 </div>
 
                 <div class="toggler">
@@ -39,35 +38,40 @@
                 <li class="sidebar-title">Menu</li>
 
                 <li class="sidebar-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                    <a href="{{ route('dashboard') }}" class='sidebar-link'>
+                    <a href="{{ route('dashboard') }}" class="sidebar-link">
                         <i class="bi bi-grid-fill"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
 
-                <li class="sidebar-item {{ request()->routeIs('equipment.index') ? 'active' : '' }}">
-                    <a href="{{ route('equipment.index') }}" class="sidebar-link">
-                        <i class="bi bi-hdd-fill"></i>
-                        <span>Equipment</span>
+                <li
+                    class="sidebar-item has-sub {{ request()->routeIs('equipment.index') || request()->routeIs('indicator.index') || request()->routeIs('problem.index') ? 'active' : '' }}">
+                    <a href="#" class="sidebar-link">
+                        <i class="bi bi-stack"></i>
+                        <span>Master Data</span>
                     </a>
-                </li>  
-                
-                <li class="sidebar-item {{ request()->routeIs('indicator.index') ? 'active' : '' }}">
-                    <a href="{{ route('indicator.index') }}" class="sidebar-link">
-                        <i class="bi bi-bar-chart"></i>
-                        <span>Indicator</span>
-                    </a>
+                    <ul class="submenu">
+                        <li class="submenu-item {{ request()->routeIs('equipment.index') ? 'active' : '' }}">
+                            <a href="{{ route('equipment.index') }}">Equipment</a>
+                        </li>
+                        <li class="submenu-item {{ request()->routeIs('indicator.index') ? 'active' : '' }}">
+                            <a href="{{ route('indicator.index') }}">Indicator</a>
+                        </li>
+                        <li class="submenu-item {{ request()->routeIs('problem.index') ? 'active' : '' }}">
+                            <a href="{{ route('problem.index') }}">Problem</a>
+                        </li>
+                    </ul>
                 </li>
 
-                <li class="sidebar-item {{ request()->routeIs('problem.index') ? 'active' : '' }}">
-                    <a href="{{ route('problem.index') }}" class="sidebar-link">
-                        <i class="bi bi-exclamation-triangle-fill"></i>
-                        <span>Problem</span>
+                <li class="sidebar-item {{ request()->routeIs('inspection.index') ? 'active' : '' }}">
+                    <a href="{{ route('inspection.index') }}" class="sidebar-link">
+                        <i class="bi bi-sliders"></i>
+                        <span>Inspections</span>
                     </a>
-                </li>
+                </li>                
 
                 <li class="sidebar-item">
-                    <a href="{{ route('logout') }}" class='sidebar-link'
+                    <a href="{{ route('logout') }}" class="sidebar-link"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="bi bi-box-arrow-right"></i>
                         <span>Logout</span>

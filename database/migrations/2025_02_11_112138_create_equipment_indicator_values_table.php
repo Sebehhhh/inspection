@@ -11,15 +11,28 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('equipment_indicator_values', function (Blueprint $table) {
+        Schema::create('inspections', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('equipment_id')->constrained('equipments')->onDelete('cascade');
-            $table->unsignedBigInteger('indicator_id')->constrained('indicators')->onDelete('cascade');
+            
+            // Foreign key to equipments table
+            $table->unsignedBigInteger('equipment_id');
+            $table->foreign('equipment_id')->references('id')->on('equipments')->onDelete('cascade');
+            
+            // Foreign key to indicators table
+            $table->unsignedBigInteger('indicator_id');
+            $table->foreign('indicator_id')->references('id')->on('indicators')->onDelete('cascade');
+            
+            // Tambahkan kolom problem_id sebagai foreign key ke tabel problems
+            $table->unsignedBigInteger('problem_id')->nullable();
+            $table->foreign('problem_id')->references('id')->on('problems')->onDelete('cascade');
+
             // Menyimpan nilai baseline dan real, gunakan tipe decimal sesuai kebutuhan presisi
             $table->decimal('baseline', 8, 2);
             $table->decimal('real', 8, 2);
-            // Menggunakan enum untuk status dengan pilihan 'Yes' dan 'No'
+            
+            // Menggunakan boolean untuk status dengan default false
             $table->boolean('status')->default(false);
+            
             $table->timestamps();
         });
     }
@@ -29,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('equipment_indicator_values');
+        Schema::dropIfExists('inspections');
     }
 };
