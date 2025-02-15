@@ -58,7 +58,13 @@
                         <span>Indicator</span>
                     </a>
                 </li>
-                
+
+                <li class="sidebar-item {{ request()->routeIs('problem.index') ? 'active' : '' }}">
+                    <a href="{{ route('problem.index') }}" class="sidebar-link">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>Problem</span>
+                    </a>
+                </li>
 
                 <li class="sidebar-item">
                     <a href="{{ route('logout') }}" class='sidebar-link'
