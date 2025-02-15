@@ -20,7 +20,7 @@
                     <div class="auth-logo" style="text-align: center;">
                         <a href="#"><img src="{{ asset('assets/images/logo/pln.png') }}" alt="Logo Kangangopi" style="width: 300px; height: auto;"></a>
                     </div>
-                    <h1 class="auth-title" style="color: black;">Masuk</h1>
+                    <h1 class="auth-title" style="color: black;">Login</h1>
                     <p class="auth-subtitle mb-5">Masuk dengan data yang telah Anda daftarkan sebelumnya.</p>
 
                     <form action="{{ route('loginAction') }}" method="POST">
