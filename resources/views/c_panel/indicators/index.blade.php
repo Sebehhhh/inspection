@@ -26,7 +26,7 @@
                     <div class="card">
                         <div class="card-header">
                             <a href="{{ route('indicator.create') }}" class="btn btn-success btn-sm float-end">
-                                <i class="bi bi-plus"></i>Add
+                                <i class="bi bi-plus"></i> Add
                             </a>
                         </div>
                         <div class="card-content">
@@ -40,6 +40,7 @@
                                                 <th>Equipment</th>
                                                 <th>Name</th>
                                                 <th>Unit</th>
+                                                <th>Baseline</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -50,6 +51,7 @@
                                                 <td>{{ $indicator->equipment->name }}</td>
                                                 <td class="text-bold-500">{{ $indicator->name }}</td>
                                                 <td>{{ $indicator->unit }}</td>
+                                                <td>{{ $indicator->baseline }}</td>
                                                 <td>
                                                     <a href="{{ route('indicator.edit', \Illuminate\Support\Facades\Crypt::encrypt($indicator->id)) }}" class="btn btn-primary btn-sm">
                                                         <i class="bi bi-pencil"></i>

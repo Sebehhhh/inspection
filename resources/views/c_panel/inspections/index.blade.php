@@ -1,83 +1,91 @@
 @extends('c_panel.layouts.app')
-@section('title', 'Inspections Management')
+@section('title', 'Inspections Matrix')
 
 @section('content')
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
-                    <h3>Inspections Management</h3>
+                    <h3>Inspections Matrix</h3>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Inspections Management</li>
+                            <li class="breadcrumb-item active" aria-current="page">Inspections Matrix</li>
                         </ol>
                     </nav>
                 </div>
             </div>
         </div>
 
-        <!-- Basic Tables start -->
-        <section class="section">
-            <div class="row" id="basic-table">
-                <div class="col-12 col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <a href="{{ route('inspection.create') }}" class="btn btn-success btn-sm float-end">
-                                <i class="bi bi-plus"></i> Add
-                            </a>
-                        </div>
-                        <div class="card-content">
-                            <div class="card-body">
-                                <!-- Table with outer spacing -->
-                                <div class="table-responsive">
-                                    <table class="table table-lg">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Equipment</th>
-                                                <th>Indicator</th>
-                                                <th>Problem</th>
-                                                <th>Baseline</th>
-                                                <th>Real</th>
-                                                <th>Status</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($inspections as $index => $inspection)
-                                                <tr>
-                                                    <td class="text-bold-500">{{ $index + 1 }}</td>
-                                                    <td>{{ $inspection->equipment->name }}</td>
-                                                    <td>{{ $inspection->indicator->name }}</td>
-                                                    <td>{{ optional($inspection->problem)->name }}</td>
-                                                    <td>{{ $inspection->baseline }}</td>
-                                                    <td>{{ $inspection->real }}</td>
-                                                    <td>{{ $inspection->status ? 'Yes' : 'No' }}</td>
-                                                    <td>
-                                                        <a href="{{ route('inspection.edit', \Illuminate\Support\Facades\Crypt::encrypt($inspection->id)) }}" class="btn btn-primary btn-sm">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </a>
-                                                        <form action="{{ route('inspection.destroy', $inspection->id) }}" method="POST" style="display:inline;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+        <!-- Equipment Selection -->
+        <section id="equipment-selection">
+            <form action="{{ route('inspection.index') }}" method="GET">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <label for="equipment_id" class="form-label">Select Equipment</label>
+                        <select name="equipment_id" id="equipment_id" class="form-control" onchange="this.form.submit()">
+                            <option value="">-- Select Equipment --</option>
+                            @foreach ($equipments as $equipment)
+                                <option value="{{ $equipment->id }}"
+                                    {{ request('equipment_id') == $equipment->id ? 'selected' : '' }}>
+                                    {{ $equipment->name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
-            </div>
+            </form>
         </section>
+
+        @if (request('equipment_id'))
+            <!-- Edit Matrix Button -->
+            <div class="mb-3">
+                <a href="{{ route('inspection.editMatrix', ['equipment_id' => request('equipment_id')]) }}"
+                    class="btn btn-warning">
+                    <i class="bi bi-pencil-square"></i> Edit Matrix
+                </a>
+            </div>
+            <!-- Matrix Table: Rows = Problems, Columns = Indicators -->
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Heat Loss Caused \ Heat Loss Mode</th>
+                            @foreach ($indicators as $indicator)
+                                <th>
+                                    {{ $indicator->name }}<br>
+                                    <small>Baseline: {{ $indicator->baseline }}</small>
+                                </th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($problems as $problem)
+                            <tr>
+                                <td>{{ $problem->name }}</td>
+                                @foreach ($indicators as $indicator)
+                                    <td class="text-center">
+                                        @php
+                                            // Find the inspection record for this problem and indicator (if exists)
+                                            $inspection = $inspections->firstWhere(function ($item) use (
+                                                $problem,
+                                                $indicator,
+                                            ) {
+                                                return $item->problem_id == $problem->id &&
+                                                    $item->indicator_id == $indicator->id;
+                                            });
+                                        @endphp
+                                        <input type="checkbox" disabled
+                                            @if ($inspection && $inspection->real != $indicator->baseline) checked style="accent-color: green;" @endif>
+                                    </td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
     </div>
 @endsection

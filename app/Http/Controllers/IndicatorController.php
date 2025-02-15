@@ -24,9 +24,10 @@ class IndicatorController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name'         => 'required|string|max:255',
             'equipment_id' => 'required|integer',
-            'unit' => 'required|string|max:50',
+            'unit'         => 'required|string|max:50',
+            'baseline'     => 'required|numeric',
         ]);
 
         Indicator::create($request->all());
@@ -41,13 +42,13 @@ class IndicatorController extends Controller
         return view('c_panel.indicators.edit', compact('indicator', 'equipments'));
     }
 
-
     public function update(Request $request, Indicator $indicator)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name'         => 'required|string|max:255',
             'equipment_id' => 'required|integer',
-            'unit' => 'required|string|max:50',
+            'unit'         => 'required|string|max:50',
+            'baseline'     => 'required|numeric',
         ]);
 
         $indicator->update($request->all());

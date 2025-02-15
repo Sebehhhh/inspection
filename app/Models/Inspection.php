@@ -15,9 +15,7 @@ class Inspection extends Model
         'equipment_id',
         'indicator_id',
         'problem_id',
-        'baseline',
         'real',
-        'status',
     ];
 
     public function equipment()

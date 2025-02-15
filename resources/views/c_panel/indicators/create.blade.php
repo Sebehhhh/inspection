@@ -12,8 +12,7 @@
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('indicator.index') }}">Indicator Management</a>
-                            </li>
+                            <li class="breadcrumb-item"><a href="{{ route('indicator.index') }}">Indicator Management</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Add Indicator</li>
                         </ol>
                     </nav>
@@ -31,7 +30,7 @@
                                 <form class="form" action="{{ route('indicator.store') }}" method="POST">
                                     @csrf
                                     <div class="row">
-                                        <div class="col-md-4 col-12">
+                                        <div class="col-md-3 col-12">
                                             <div class="form-group">
                                                 <label for="name">Name</label>
                                                 <input type="text" id="name" class="form-control" name="name"
@@ -41,7 +40,7 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-md-4 col-12">
+                                        <div class="col-md-3 col-12">
                                             <div class="form-group">
                                                 <label for="equipment_id">Equipment</label>
                                                 <select id="equipment_id" class="form-control" name="equipment_id" required>
@@ -55,12 +54,22 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-md-4 col-12">
+                                        <div class="col-md-3 col-12">
                                             <div class="form-group">
                                                 <label for="unit">Unit</label>
                                                 <input type="text" id="unit" class="form-control" name="unit"
                                                     placeholder="Unit" required>
                                                 @error('unit')
+                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-12">
+                                            <div class="form-group">
+                                                <label for="baseline">Baseline</label>
+                                                <input type="number" id="baseline" class="form-control" name="baseline"
+                                                    placeholder="Baseline" required>
+                                                @error('baseline')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
