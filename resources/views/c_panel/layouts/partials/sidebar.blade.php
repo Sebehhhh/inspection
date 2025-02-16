@@ -60,7 +60,11 @@
                         <li class="submenu-item {{ request()->routeIs('problem.index') ? 'active' : '' }}">
                             <a href="{{ route('problem.index') }}">Problem</a>
                         </li>
+                        <li class="submenu-item {{ request()->routeIs('solution.index') ? 'active' : '' }}">
+                            <a href="{{ route('solution.index') }}">Solutions</a>
+                        </li>
                     </ul>
+
                 </li>
 
                 <li class="sidebar-item {{ request()->routeIs('inspection.index') ? 'active' : '' }}">
@@ -68,7 +72,7 @@
                         <i class="bi bi-sliders"></i>
                         <span>Inspections</span>
                     </a>
-                </li>                
+                </li>
 
                 <li class="sidebar-item">
                     <a href="{{ route('logout') }}" class="sidebar-link"

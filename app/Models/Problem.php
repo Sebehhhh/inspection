@@ -30,4 +30,9 @@ class Problem extends Model
     {
         return $this->hasMany(Problem::class, 'parent_problem_id');
     }
+
+    public function solution()
+    {
+        return $this->hasOne(Solution::class);
+    }
 }
