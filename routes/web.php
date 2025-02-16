@@ -7,6 +7,7 @@ use App\Http\Controllers\IndicatorController;
 use App\Http\Controllers\IndicatorValueController;
 use App\Http\Controllers\InspectionController;
 use App\Http\Controllers\ProblemController;
+use App\Http\Controllers\ResultController;
 use App\Http\Controllers\SolutionController;
 use App\Models\IndicatorValue;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('problem', ProblemController::class);
     Route::resource('inspection', InspectionController::class)->except(['show']);
     Route::resource('solution', SolutionController::class)->except(['show']);
+    Route::resource('result', ResultController::class)->except(['show']);
     Route::get('inspection/edit-matrix', [InspectionController::class, 'editMatrix'])->name('inspection.editMatrix');
     Route::put('inspection/update-matrix', [InspectionController::class, 'updateMatrix'])->name('inspection.updateMatrix');
    

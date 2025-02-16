@@ -74,6 +74,14 @@
                     </a>
                 </li>
 
+                <li class="sidebar-item {{ request()->routeIs('result.index') ? 'active' : '' }}">
+                    <a href="{{ route('result.index') }}" class="sidebar-link">
+                        <i class="bi bi-graph-up"></i>
+                        <span>Result</span>
+                    </a>
+                </li>
+                
+
                 <li class="sidebar-item">
                     <a href="{{ route('logout') }}" class="sidebar-link"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
