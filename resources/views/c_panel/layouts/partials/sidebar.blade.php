@@ -55,30 +55,12 @@
                             <a href="{{ route('equipment.index') }}">Equipment</a>
                         </li>
                         <li class="submenu-item {{ request()->routeIs('indicator.index') ? 'active' : '' }}">
-                            <a href="{{ route('indicator.index') }}">Indicator</a>
+                            <a href="{{ route('indicator.index') }}">Heat Loss Mode</a>
                         </li>
                         <li class="submenu-item {{ request()->routeIs('problem.index') ? 'active' : '' }}">
-                            <a href="{{ route('problem.index') }}">Problem</a>
-                        </li>
-                        <li class="submenu-item {{ request()->routeIs('solution.index') ? 'active' : '' }}">
-                            <a href="{{ route('solution.index') }}">Solutions</a>
+                            <a href="{{ route('problem.index') }}">Heat Loss Caused</a>
                         </li>
                     </ul>
-
-                </li>
-
-                <li class="sidebar-item {{ request()->routeIs('inspection.index') ? 'active' : '' }}">
-                    <a href="{{ route('inspection.index') }}" class="sidebar-link">
-                        <i class="bi bi-sliders"></i>
-                        <span>Inspections</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-item {{ request()->routeIs('result.index') ? 'active' : '' }}">
-                    <a href="{{ route('result.index') }}" class="sidebar-link">
-                        <i class="bi bi-graph-up"></i>
-                        <span>Result</span>
-                    </a>
                 </li>
                 
 

@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('indicators', function (Blueprint $table) {
+        Schema::create('inspection_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('equipment_id')->constrained('equipments')->onDelete('cascade');
-            $table->string('name');
-            $table->string('unit')->nullable();
-            $table->decimal('baseline', 8, 2)->nullable(); // Menyimpan nilai numerik (contoh: 999999.99)
+            $table->foreignId('indicator_id')->nullable()->constrained('indicators')->onDelete('cascade');
+            $table->decimal('actual_value', 8, 2)->nullable(); 
+            $table->string('status'); 
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('indicators');
+        Schema::dropIfExists('inspection_histories');
     }
 };

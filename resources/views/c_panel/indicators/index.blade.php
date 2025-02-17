@@ -1,18 +1,18 @@
 @extends('c_panel.layouts.app')
-@section('title', 'Indicator')
+@section('title', 'Heat Loss Mode')
 
 @section('content')
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
-                    <h3>Indicator Management</h3>
+                    <h3>Heat Loss Mode Management</h3>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Indicator Management</li>
+                            <li class="breadcrumb-item active" aria-current="page">Heat Loss Mode Management</li>
                         </ol>
                     </nav>
                 </div>

@@ -26,7 +26,7 @@
                     <div class="card">
                         <div class="card-header">
                             <a href="{{ route('equipment.create') }}" class="btn btn-success btn-sm float-end">
-                                <i class="bi bi-plus"></i>Add
+                                <i class="bi bi-plus"></i> Add
                             </a>
                         </div>
                         <div class="card-content">
@@ -43,27 +43,33 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($equipments as $index => $equipment)
-                                            <tr>
-                                                <td class="text-bold-500">{{ $index + 1 }}</td>
-                                                <td class="text-bold-500">{{ $equipment->name }}</td>
-                                                <td>{{ $equipment->description }}</td>
-                                                <td>
-                                                    <a href="{{ route('equipment.edit', \Illuminate\Support\Facades\Crypt::encrypt($equipment->id)) }}" class="btn btn-primary btn-sm">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a>
-                                                    <form action="{{ route('equipment.destroy', $equipment->id) }}" method="POST" style="display:inline;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </td>
-                                            </tr>
+                                            @foreach ($equipments as $index => $equipment)
+                                                <tr>
+                                                    <td class="text-bold-500">{{ $equipments->firstItem() + $index }}</td>
+                                                    <td class="text-bold-500">{{ $equipment->name }}</td>
+                                                    <td>{{ $equipment->description }}</td>
+                                                    <td>
+                                                        <a href="{{ route('equipment.edit', encrypt($equipment->id)) }}"
+                                                            class="btn btn-primary btn-sm">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                        <form action="{{ route('equipment.destroy', $equipment->id) }}"
+                                                            method="POST" style="display:inline;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
+                                </div>
+                                <!-- Pagination links -->
+                                <div class="d-flex justify-content-center mt-3">
+                                    {{ $equipments->links('pagination::bootstrap-4') }}
                                 </div>
                             </div>
                         </div>

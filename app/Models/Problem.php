@@ -14,6 +14,8 @@ class Problem extends Model
         'equipment_id',
         'parent_problem_id',
         'name',
+        'further_testing',
+        'corrective_action',
     ];
 
     public function equipment()
@@ -29,10 +31,5 @@ class Problem extends Model
     public function problems()
     {
         return $this->hasMany(Problem::class, 'parent_problem_id');
-    }
-
-    public function solution()
-    {
-        return $this->hasOne(Solution::class);
     }
 }

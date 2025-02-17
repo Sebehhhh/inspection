@@ -10,7 +10,8 @@ class EquipmentController extends Controller
 {
     public function index()
     {
-        $equipments = Equipment::all();
+        // Menggunakan paginate(10) untuk menampilkan 10 data per halaman
+        $equipments = Equipment::paginate(10);
         return view('c_panel.equipments.index', compact('equipments'));
     }
 
@@ -21,12 +22,13 @@ class EquipmentController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
+        $validatedData = $request->validate([
+            'name'        => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
-        Equipment::create($request->all());
+        // Menggunakan data yang sudah divalidasi
+        Equipment::create($validatedData);
         return redirect()->route('equipment.index')->with('success', 'Equipment created successfully.');
     }
 
@@ -39,19 +41,18 @@ class EquipmentController extends Controller
 
     public function update(Request $request, Equipment $equipment)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
+        $validatedData = $request->validate([
+            'name'        => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
-        $equipment->update($request->all());
-
-        return redirect()->route('equipment.index')->with('success', 'Equipment updated successfully.');;
+        $equipment->update($validatedData);
+        return redirect()->route('equipment.index')->with('success', 'Equipment updated successfully.');
     }
 
     public function destroy(Equipment $equipment)
     {
         $equipment->delete();
-        return redirect()->route('equipment.index')->with('success', 'Equipment deleted successfully.');;
+        return redirect()->route('equipment.index')->with('success', 'Equipment deleted successfully.');
     }
 }

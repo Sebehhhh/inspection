@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('inspections', function (Blueprint $table) {
-            $table->dropColumn(['baseline', 'status']);
+        Schema::create('rules', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('indicator_id')->constrained('indicators')->onDelete('cascade');
+            $table->foreignId('problem_id')->constrained('problems')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -21,9 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('inspections', function (Blueprint $table) {
-            $table->decimal('baseline', 8, 2);
-            $table->boolean('status')->default(false);
-        });
+        Schema::dropIfExists('rules');
     }
 };

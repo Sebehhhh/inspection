@@ -11,26 +11,31 @@ class ProblemController extends Controller
 {
     public function index()
     {
-        $problems = Problem::all();
+        // Menggunakan paginate(10) agar data ditampilkan 10 per halaman
+        $problems = Problem::paginate(10);
         return view('c_panel.problems.index', compact('problems'));
     }
 
     public function create()
     {
         $equipments = Equipment::all();
+        // Ambil parent problem yang hanya merupakan masalah utama
         $parentProblems = Problem::whereNull('parent_problem_id')->get();
         return view('c_panel.problems.create', compact('equipments', 'parentProblems'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'equipment_id' => 'required|integer',
-            'parent_problem_id' => 'nullable|integer',
+        // Validasi data dan simpan hasil validasi ke variabel
+        $validatedData = $request->validate([
+            'name'                => 'required|string|max:255',
+            'equipment_id'        => 'required|integer',
+            'parent_problem_id'   => 'nullable|integer',
+            'further_testing'     => 'nullable|string',
+            'correvtive_action'   => 'nullable|string',
         ]);
 
-        Problem::create($request->all());
+        Problem::create($validatedData);
         return redirect()->route('problem.index')->with('success', 'Problem created successfully.');
     }
 
@@ -39,20 +44,22 @@ class ProblemController extends Controller
         $id = Crypt::decrypt($encryptedId);
         $problem = Problem::findOrFail($id);
         $equipments = Equipment::all();
-        // Jika diperlukan, ambil juga masalah utama (parent problems) untuk opsi sub-kategori
+        // Mengambil parent problems kecuali masalah yang sedang diedit agar tidak terjadi rekursif
         $parentProblems = Problem::where('id', '!=', $id)->get();
         return view('c_panel.problems.edit', compact('problem', 'equipments', 'parentProblems'));
     }
 
     public function update(Request $request, Problem $problem)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'equipment_id' => 'required|integer',
-            'parent_problem_id' => 'nullable|integer',
+        $validatedData = $request->validate([
+            'name'                => 'required|string|max:255',
+            'equipment_id'        => 'required|integer',
+            'parent_problem_id'   => 'nullable|integer',
+            'further_testing'     => 'nullable|string',
+            'correvtive_action'   => 'nullable|string',
         ]);
 
-        $problem->update($request->all());
+        $problem->update($validatedData);
         return redirect()->route('problem.index')->with('success', 'Problem updated successfully.');
     }
 

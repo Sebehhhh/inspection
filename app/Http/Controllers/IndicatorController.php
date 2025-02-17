@@ -11,7 +11,8 @@ class IndicatorController extends Controller
 {
     public function index()
     {
-        $indicators = Indicator::all();
+        // Mengambil data indicator dengan pagination 10 per halaman
+        $indicators = Indicator::paginate(10);
         return view('c_panel.indicators.index', compact('indicators'));
     }
 
@@ -23,14 +24,14 @@ class IndicatorController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'name'         => 'required|string|max:255',
             'equipment_id' => 'required|integer',
             'unit'         => 'required|string|max:50',
             'baseline'     => 'required|numeric',
         ]);
 
-        Indicator::create($request->all());
+        Indicator::create($validatedData);
         return redirect()->route('indicator.index')->with('success', 'Indicator created successfully.');
     }
 
@@ -44,14 +45,14 @@ class IndicatorController extends Controller
 
     public function update(Request $request, Indicator $indicator)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'name'         => 'required|string|max:255',
             'equipment_id' => 'required|integer',
             'unit'         => 'required|string|max:50',
             'baseline'     => 'required|numeric',
         ]);
 
-        $indicator->update($request->all());
+        $indicator->update($validatedData);
         return redirect()->route('indicator.index')->with('success', 'Indicator updated successfully.');
     }
 

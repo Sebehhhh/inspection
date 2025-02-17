@@ -70,6 +70,28 @@
                                                 @enderror
                                             </div>
                                         </div>
+                                        <!-- Tambahan field Further Testing -->
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group">
+                                                <label for="further_testing">Further Testing</label>
+                                                <textarea id="further_testing" class="form-control" name="further_testing" placeholder="Enter further testing details">{{ old('further_testing') }}</textarea>
+                                                @error('further_testing')
+                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <!-- Tambahan field Corrective Action -->
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group">
+                                                <label for="correvtive_action">Corrective Action</label>
+                                                <textarea id="correvtive_action" class="form-control" name="correvtive_action"
+                                                    placeholder="Enter corrective action details">{{ old('correvtive_action') }}</textarea>
+                                                @error('correvtive_action')
+                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
                                         <div class="col-12 d-flex justify-content-end">
                                             <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
                                             <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>

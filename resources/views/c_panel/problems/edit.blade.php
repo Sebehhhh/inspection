@@ -81,6 +81,31 @@
                                         @enderror
                                     </div>
 
+                                    <!-- Field untuk Further Testing -->
+                                    <div class="form-group">
+                                        <label for="further_testing">Further Testing</label>
+                                        <textarea class="form-control @error('further_testing') is-invalid @enderror" id="further_testing"
+                                            name="further_testing" placeholder="Enter further testing details">{{ old('further_testing', $problem->further_testing) }}</textarea>
+                                        @error('further_testing')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Field untuk Corrective Action -->
+                                    <div class="form-group">
+                                        <label for="correvtive_action">Corrective Action</label>
+                                        <textarea class="form-control @error('correvtive_action') is-invalid @enderror" id="correvtive_action"
+                                            name="correvtive_action" placeholder="Enter corrective action details">{{ old('correvtive_action', $problem->correvtive_action) }}</textarea>
+                                        @error('correvtive_action')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+
+
                                     <div class="mt-3">
                                         <button type="submit" class="btn btn-primary">Save Changes</button>
                                         <a href="{{ route('problem.index') }}" class="btn btn-secondary">Back</a>

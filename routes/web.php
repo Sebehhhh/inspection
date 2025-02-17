@@ -23,14 +23,5 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('equipment', EquipmentController::class);
     Route::resource('indicator', IndicatorController::class);
     Route::resource('problem', ProblemController::class);
-    Route::resource('inspection', InspectionController::class)->except(['show']);
-    Route::resource('solution', SolutionController::class)->except(['show']);
-    Route::resource('result', ResultController::class)->except(['show']);
-    Route::get('inspection/edit-matrix', [InspectionController::class, 'editMatrix'])->name('inspection.editMatrix');
-    Route::put('inspection/update-matrix', [InspectionController::class, 'updateMatrix'])->name('inspection.updateMatrix');
-   
-    Route::get('solution/edit-matrix', [SolutionController::class, 'editMatrix'])->name('solution.editMatrix');
-    Route::put('solution/update-matrix', [SolutionController::class, 'updateMatrix'])->name('solution.updateMatrix');
-    
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
