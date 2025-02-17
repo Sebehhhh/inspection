@@ -45,7 +45,7 @@
                 </li>
 
                 <li
-                    class="sidebar-item has-sub {{ request()->routeIs('equipment.index') || request()->routeIs('indicator.index') || request()->routeIs('problem.index') ? 'active' : '' }}">
+                    class="sidebar-item has-sub {{ request()->routeIs('equipment.index') || request()->routeIs('indicator.index') || request()->routeIs('problem.index') || request()->routeIs('rules.index') ? 'active' : '' }}">
                     <a href="#" class="sidebar-link">
                         <i class="bi bi-stack"></i>
                         <span>Master Data</span>
@@ -60,9 +60,11 @@
                         <li class="submenu-item {{ request()->routeIs('problem.index') ? 'active' : '' }}">
                             <a href="{{ route('problem.index') }}">Heat Loss Caused</a>
                         </li>
+                        <li class="submenu-item {{ request()->routeIs('rules.index') ? 'active' : '' }}">
+                            <a href="{{ route('rules.index') }}">Rules</a>
+                        </li>
                     </ul>
                 </li>
-                
 
                 <li class="sidebar-item">
                     <a href="{{ route('logout') }}" class="sidebar-link"
