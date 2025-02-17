@@ -95,10 +95,10 @@
 
                                     <!-- Field untuk Corrective Action -->
                                     <div class="form-group">
-                                        <label for="correvtive_action">Corrective Action</label>
-                                        <textarea class="form-control @error('correvtive_action') is-invalid @enderror" id="correvtive_action"
-                                            name="correvtive_action" placeholder="Enter corrective action details">{{ old('correvtive_action', $problem->correvtive_action) }}</textarea>
-                                        @error('correvtive_action')
+                                        <label for="corrective_action">Corrective Action</label>
+                                        <textarea class="form-control @error('corrective_action') is-invalid @enderror" id="corrective_action"
+                                            name="corrective_action" placeholder="Enter corrective action details">{{ old('corrective_action', $problem->corrective_action) }}</textarea>
+                                        @error('corrective_action')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
                                             </div>

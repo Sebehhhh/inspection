@@ -7,11 +7,7 @@
         // Coba dekripsi equipment_id dari request jika ada, agar dapat dibandingkan
         $selectedEquipmentId = null;
         if (request()->filled('equipment_id')) {
-            try {
-                $selectedEquipmentId = Crypt::decrypt(request('equipment_id'));
-            } catch (\Exception $e) {
-                $selectedEquipmentId = null;
-            }
+            $selectedEquipmentId = Crypt::decrypt(request('equipment_id'));
         }
     @endphp
     <div class="page-heading">
@@ -86,7 +82,7 @@
                                                     <td class="text-bold-500">{{ $problem->name }}</td>
                                                     <td>{{ optional($problem->parentProblem)->name }}</td>
                                                     <td>{{ $problem->further_testing }}</td>
-                                                    <td>{{ $problem->correvtive_action }}</td>
+                                                    <td>{{ $problem->corrective_action }}</td>
                                                     <td>
                                                         <a href="{{ route('problem.edit', encrypt($problem->id)) }}"
                                                             class="btn btn-primary btn-sm">

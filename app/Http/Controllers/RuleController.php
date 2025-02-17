@@ -32,7 +32,7 @@ class RuleController extends Controller
         // Ambil data indikator dan masalah (problem) berdasarkan equipment yang dipilih
         $indicators = Indicator::where('equipment_id', $equipment->id)->get();
         $problems   = Problem::where('equipment_id', $equipment->id)->get();
-
+        // dd($problems);
         // Ambil rules yang berelasi dengan indikator dan problem tersebut
         $rules = Rule::whereIn('indicator_id', $indicators->pluck('id'))
             ->whereIn('problem_id', $problems->pluck('id'))
@@ -45,6 +45,17 @@ class RuleController extends Controller
 
     public function store(Request $request)
     {
+        // Dekripsi equipment_id terlebih dahulu dan masukkan kembali ke request
+        $encryptedEquipmentId = $request->input('equipment_id');
+        try {
+            $decryptedEquipmentId = Crypt::decrypt($encryptedEquipmentId);
+            // Merge nilai yang sudah didekripsi ke dalam request sehingga validasi bisa menganggapnya sebagai integer
+            $request->merge(['equipment_id' => $decryptedEquipmentId]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Invalid equipment id.');
+        }
+
+        // Validasi setelah equipment_id sudah didekripsi
         $request->validate([
             'equipment_id' => 'required|integer|exists:equipments,id',
         ]);
@@ -87,7 +98,10 @@ class RuleController extends Controller
             }
         }
 
-        return redirect()->route('rules.index', ['equipment_id' => $equipmentId])
+        // Kembalikan kembali equipment_id dalam bentuk terenkripsi
+        $encryptedReturnEquipmentId = Crypt::encrypt($equipmentId);
+
+        return redirect()->route('rules.index', ['equipment_id' => $encryptedReturnEquipmentId])
             ->with('success', 'Rules updated successfully.');
     }
 }

@@ -66,6 +66,14 @@
                     </ul>
                 </li>
 
+                <!-- Menu Inspect ditambahkan di sini -->
+                <li class="sidebar-item {{ request()->routeIs('inspect.index') ? 'active' : '' }}">
+                    <a href="{{ route('inspect.index') }}" class="sidebar-link">
+                        <i class="bi bi-search"></i>
+                        <span>Inspect</span>
+                    </a>
+                </li>
+
                 <li class="sidebar-item">
                     <a href="{{ route('logout') }}" class="sidebar-link"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

@@ -83,10 +83,10 @@
                                         <!-- Tambahan field Corrective Action -->
                                         <div class="col-md-6 col-12">
                                             <div class="form-group">
-                                                <label for="correvtive_action">Corrective Action</label>
-                                                <textarea id="correvtive_action" class="form-control" name="correvtive_action"
-                                                    placeholder="Enter corrective action details">{{ old('correvtive_action') }}</textarea>
-                                                @error('correvtive_action')
+                                                <label for="corrective_action">Corrective Action</label>
+                                                <textarea id="corrective_action" class="form-control" name="corrective_action"
+                                                    placeholder="Enter corrective action details">{{ old('corrective_action') }}</textarea>
+                                                @error('corrective_action')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>

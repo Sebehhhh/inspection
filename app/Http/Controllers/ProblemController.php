@@ -47,7 +47,7 @@ class ProblemController extends Controller
             'equipment_id'        => 'required|integer',
             'parent_problem_id'   => 'nullable|integer',
             'further_testing'     => 'nullable|string',
-            'correvtive_action'   => 'nullable|string',
+            'corrective_action'   => 'nullable|string',
         ]);
 
         Problem::create($validatedData);
@@ -71,7 +71,7 @@ class ProblemController extends Controller
             'equipment_id'        => 'required|integer',
             'parent_problem_id'   => 'nullable|integer',
             'further_testing'     => 'nullable|string',
-            'correvtive_action'   => 'nullable|string',
+            'corrective_action'   => 'nullable|string',
         ]);
 
         $problem->update($validatedData);
