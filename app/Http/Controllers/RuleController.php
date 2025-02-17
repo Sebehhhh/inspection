@@ -7,24 +7,26 @@ use App\Models\Indicator;
 use App\Models\Problem;
 use App\Models\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 
 class RuleController extends Controller
 {
-    
+
     public function index(Request $request)
     {
         // Ambil semua equipment untuk dropdown
         $allEquipments = Equipment::all();
 
-        // Ambil equipment_id dari request, atau gunakan equipment pertama sebagai default
-        $equipmentId = $request->get('equipment_id');
-        if (!$equipmentId) {
+        // Ambil equipment_id terenkripsi dari request, atau gunakan equipment pertama sebagai default
+        if ($request->filled('equipment_id')) {
+
+            $decryptedEquipmentId = Crypt::decrypt($request->input('equipment_id'));
+            $equipment = Equipment::findOrFail($decryptedEquipmentId);
+        } else {
             $equipment = $allEquipments->first();
             if (!$equipment) {
                 return redirect()->back()->with('error', 'No equipment found.');
             }
-        } else {
-            $equipment = Equipment::findOrFail($equipmentId);
         }
 
         // Ambil data indikator dan masalah (problem) berdasarkan equipment yang dipilih
@@ -38,6 +40,7 @@ class RuleController extends Controller
 
         return view('c_panel.rules.index', compact('equipment', 'indicators', 'problems', 'rules', 'allEquipments'));
     }
+
 
 
     public function store(Request $request)

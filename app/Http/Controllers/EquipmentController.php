@@ -11,7 +11,7 @@ class EquipmentController extends Controller
     public function index()
     {
         // Menggunakan paginate(10) untuk menampilkan 10 data per halaman
-        $equipments = Equipment::paginate(10);
+        $equipments = Equipment::all();
         return view('c_panel.equipments.index', compact('equipments'));
     }
 

@@ -9,12 +9,27 @@ use Illuminate\Support\Facades\Crypt;
 
 class ProblemController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        // Ambil semua equipment untuk dropdown filter
+        $allEquipments = Equipment::all();
+
+        // Buat query untuk Problem
+        $query = Problem::query();
+
+        // Jika ada parameter equipment_id terenkripsi, lakukan dekripsi dan filter berdasarkan equipment tersebut
+        if ($request->filled('equipment_id')) {
+            $decryptedEquipmentId = Crypt::decrypt($request->input('equipment_id'));
+            $query->where('equipment_id', $decryptedEquipmentId);
+        }
+
         // Menggunakan paginate(10) agar data ditampilkan 10 per halaman
-        $problems = Problem::paginate(10);
-        return view('c_panel.problems.index', compact('problems'));
+        $problems = $query->paginate(10);
+
+        return view('c_panel.problems.index', compact('problems', 'allEquipments'));
     }
+
+
 
     public function create()
     {

@@ -2,6 +2,9 @@
 @section('title', 'Rules Management')
 
 @section('content')
+    @php
+        use Illuminate\Support\Facades\Crypt;
+    @endphp
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -34,7 +37,7 @@
                             <select name="equipment_id" id="equipment_id" class="form-control"
                                 onchange="this.form.submit()">
                                 @foreach ($allEquipments as $equip)
-                                    <option value="{{ $equip->id }}"
+                                    <option value="{{ Crypt::encrypt($equip->id) }}"
                                         {{ $equip->id == $equipment->id ? 'selected' : '' }}>
                                         {{ $equip->name }}
                                     </option>
@@ -59,8 +62,8 @@
                                 <!-- Form untuk menyimpan rules -->
                                 <form action="{{ route('rules.store') }}" method="POST">
                                     @csrf
-                                    <!-- Hidden field untuk mengirim equipment_id -->
-                                    <input type="hidden" name="equipment_id" value="{{ $equipment->id }}">
+                                    <!-- Hidden field untuk mengirim equipment_id terenkripsi -->
+                                    <input type="hidden" name="equipment_id" value="{{ Crypt::encrypt($equipment->id) }}">
                                     <div class="table-responsive">
                                         <table class="table table-bordered">
                                             <thead>

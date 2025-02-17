@@ -2,9 +2,22 @@
 @section('title', 'Heat Loss Caused')
 
 @section('content')
+    @php
+        use Illuminate\Support\Facades\Crypt;
+        // Coba dekripsi equipment_id dari request jika ada, agar dapat dibandingkan
+        $selectedEquipmentId = null;
+        if (request()->filled('equipment_id')) {
+            try {
+                $selectedEquipmentId = Crypt::decrypt(request('equipment_id'));
+            } catch (\Exception $e) {
+                $selectedEquipmentId = null;
+            }
+        }
+    @endphp
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
+                <!-- Judul dan filter equipment -->
                 <div class="col-12 col-md-6 order-md-1 order-last">
                     <h3>Heat Loss Caused Management</h3>
                 </div>
@@ -15,6 +28,26 @@
                             <li class="breadcrumb-item active" aria-current="page">Heat Loss Caused Management</li>
                         </ol>
                     </nav>
+                </div>
+            </div>
+            <!-- Form filter by Equipment -->
+            <div class="row mb-3">
+                <div class="col-12">
+                    <form method="GET" action="{{ route('problem.index') }}">
+                        <div class="form-group">
+                            <label for="equipment_filter">Filter by Equipment</label>
+                            <select name="equipment_id" id="equipment_filter" class="form-control"
+                                onchange="this.form.submit()">
+                                <option value="">All Equipment</option>
+                                @foreach ($allEquipments as $equipment)
+                                    <option value="{{ Crypt::encrypt($equipment->id) }}"
+                                        {{ $selectedEquipmentId == $equipment->id ? 'selected' : '' }}>
+                                        {{ $equipment->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -55,7 +88,7 @@
                                                     <td>{{ $problem->further_testing }}</td>
                                                     <td>{{ $problem->correvtive_action }}</td>
                                                     <td>
-                                                        <a href="{{ route('problem.edit', \Illuminate\Support\Facades\Crypt::encrypt($problem->id)) }}"
+                                                        <a href="{{ route('problem.edit', encrypt($problem->id)) }}"
                                                             class="btn btn-primary btn-sm">
                                                             <i class="bi bi-pencil"></i>
                                                         </a>

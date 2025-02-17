@@ -9,12 +9,27 @@ use Illuminate\Support\Facades\Crypt;
 
 class IndicatorController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Mengambil data indicator dengan pagination 10 per halaman
-        $indicators = Indicator::paginate(10);
-        return view('c_panel.indicators.index', compact('indicators'));
+        // Ambil semua equipment untuk dropdown filter
+        $allEquipments = Equipment::all();
+
+        // Buat query indikator
+        $query = Indicator::query();
+
+        // Jika ada parameter equipment_id terenkripsi, lakukan dekripsi dan filter
+        if ($request->filled('equipment_id')) {
+
+            $decryptedEquipmentId = Crypt::decrypt($request->input('equipment_id'));
+            $query->where('equipment_id', $decryptedEquipmentId);
+        }
+
+        // Ambil indikator dengan pagination 10 per halaman
+        $indicators = $query->paginate(10);
+
+        return view('c_panel.indicators.index', compact('indicators', 'allEquipments'));
     }
+
 
     public function create()
     {

@@ -33,7 +33,7 @@
                             <div class="card-body">
                                 <!-- Table with outer spacing -->
                                 <div class="table-responsive">
-                                    <table class="table table-lg">
+                                    <table id="equipmentTable" class="table table-lg">
                                         <thead>
                                             <tr>
                                                 <th>No.</th>
@@ -45,8 +45,8 @@
                                         <tbody>
                                             @foreach ($equipments as $index => $equipment)
                                                 <tr>
-                                                    <td class="text-bold-500">{{ $equipments->firstItem() + $index }}</td>
-                                                    <td class="text-bold-500">{{ $equipment->name }}</td>
+                                                    <td>{{ $index + 1 }}</td>
+                                                    <td>{{ $equipment->name }}</td>
                                                     <td>{{ $equipment->description }}</td>
                                                     <td>
                                                         <a href="{{ route('equipment.edit', encrypt($equipment->id)) }}"
@@ -67,10 +67,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <!-- Pagination links -->
-                                <div class="d-flex justify-content-center mt-3">
-                                    {{ $equipments->links('pagination::bootstrap-4') }}
-                                </div>
+                                <!-- DataTables akan meng-handle paging, sorting, dan pencarian -->
                             </div>
                         </div>
                     </div>
