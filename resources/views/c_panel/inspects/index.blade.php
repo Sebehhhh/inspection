@@ -4,10 +4,14 @@
 @section('content')
     @php
         use Illuminate\Support\Facades\Crypt;
-        // Jika parameter equipment_id terenkripsi ada, coba dekripsi; jika tidak, tetap null
+        // Dekripsi equipment_id dari parameter request (jika ada)
         $selectedEquipmentId = null;
         if (request()->filled('equipment_id')) {
-            $selectedEquipmentId = Crypt::decrypt(request('equipment_id'));
+            try {
+                $selectedEquipmentId = Crypt::decrypt(request('equipment_id'));
+            } catch (\Exception $e) {
+                $selectedEquipmentId = null;
+            }
         }
     @endphp
     <div class="page-heading">
@@ -72,8 +76,7 @@
                                                 <th>Indicator</th>
                                                 <th>Actual Value</th>
                                                 <th>Status</th>
-                                                <th>Further Testing</th>
-                                                <th>Corrective Action</th>
+                                                <th>Problem Details</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -90,47 +93,49 @@
                                                             <span class="badge bg-danger">Problem Detected</span>
                                                         @endif
                                                     </td>
-
-                                                    @if (!$history->status && isset($rules[$history->indicator_id]))
-                                                        @php
-                                                            // Kumpulkan further_testing dan corrective_action dari setiap rule terkait indikator
-                                                            $furtherTesting = [];
-                                                            $correctiveActions = [];
-                                                            foreach ($rules[$history->indicator_id] as $rule) {
-                                                                if ($rule->problem) {
-                                                                    $furtherTesting[] = $rule->problem->further_testing;
-                                                                    $correctiveActions[] =
-                                                                        $rule->problem->corrective_action;
+                                                    <td>
+                                                        @if (!$history->status && isset($rules[$history->indicator_id]))
+                                                            @php
+                                                                // Kumpulkan data problem, further_testing, dan corrective_action untuk indikator ini
+                                                                $problemData = [];
+                                                                foreach ($rules[$history->indicator_id] as $rule) {
+                                                                    if ($rule->problem) {
+                                                                        $problemData[] = [
+                                                                            'name' => $rule->problem->name,
+                                                                            'further_testing' =>
+                                                                                $rule->problem->further_testing,
+                                                                            'corrective_action' =>
+                                                                                $rule->problem->corrective_action,
+                                                                        ];
+                                                                    }
                                                                 }
-                                                            }
-                                                        @endphp
-                                                        <td>
-                                                            @if (count(array_filter($furtherTesting)) > 0)
-                                                                <ul class="mb-0">
-                                                                    @foreach (array_filter($furtherTesting) as $ft)
-                                                                        <li>{{ $ft }}</li>
-                                                                    @endforeach
-                                                                </ul>
+                                                            @endphp
+                                                            @if (count($problemData) > 0)
+                                                                <table class="table table-bordered mb-0">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Problem</th>
+                                                                            <th>Further Testing</th>
+                                                                            <th>Corrective Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach ($problemData as $data)
+                                                                            <tr>
+                                                                                <td>{{ $data['name'] }}</td>
+                                                                                <td>{{ $data['further_testing'] }}</td>
+                                                                                <td>{{ $data['corrective_action'] }}</td>
+                                                                            </tr>
+                                                                        @endforeach
+                                                                    </tbody>
+                                                                </table>
                                                             @else
                                                                 -
                                                             @endif
-                                                        </td>
-                                                        <td>
-                                                            @if (count(array_filter($correctiveActions)) > 0)
-                                                                <ul class="mb-0">
-                                                                    @foreach (array_filter($correctiveActions) as $ca)
-                                                                        <li>{{ $ca }}</li>
-                                                                    @endforeach
-                                                                </ul>
-                                                            @else
-                                                                -
-                                                            @endif
-                                                        </td>
-                                                    @else
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                    @endif
-
+                                                        @else
+                                                            -
+                                                        @endif
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
