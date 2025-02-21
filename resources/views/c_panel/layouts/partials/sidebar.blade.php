@@ -74,6 +74,14 @@
                     </a>
                 </li>
 
+                <li class="sidebar-item {{ request()->routeIs('user.index') ? 'active' : '' }}">
+                    <a href="{{ route('user.index') }}" class="sidebar-link">
+                        <i class="bi bi-person"></i>
+                        <span>User</span>
+                    </a>
+                </li>
+
+
                 <li class="sidebar-item">
                     <a href="{{ route('logout') }}" class="sidebar-link"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

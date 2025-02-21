@@ -7,11 +7,7 @@
         // Dekripsi equipment_id dari parameter request (jika ada)
         $selectedEquipmentId = null;
         if (request()->filled('equipment_id')) {
-            try {
-                $selectedEquipmentId = Crypt::decrypt(request('equipment_id'));
-            } catch (\Exception $e) {
-                $selectedEquipmentId = null;
-            }
+            $selectedEquipmentId = Crypt::decrypt(request('equipment_id'));
         }
     @endphp
     <div class="page-heading">
