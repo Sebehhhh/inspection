@@ -10,7 +10,6 @@ use App\Http\Controllers\RuleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'loginAction'])->name('loginAction');
 
@@ -22,7 +21,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('indicator', IndicatorController::class);
     Route::resource('problem', ProblemController::class);
     Route::resource('rules', RuleController::class);
-    Route::resource('inspect', InspectController::class);
+    Route::resource('inspect', InspectController::class)->except(['show']);
     Route::resource('user', UserController::class);
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    //print history
+    Route::get('/inspect/print', [InspectController::class, 'printHistory'])->name('inspect.printHistory');
 });

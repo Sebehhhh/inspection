@@ -46,6 +46,9 @@
                     </form>
                 </div>
             </div>
+            <div class="d-flex justify-content-end mb-3">
+                <a href="{{ route('inspect.printHistory', request()->query()) }}" target="_blank" class="btn btn-primary">Print</a>
+            </div>
         </div>
 
         <!-- Tabel History Inspeksi -->

@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Equipment;
 use App\Models\History;
 use App\Models\Indicator;
-use App\Models\Inspection; // Pastikan model ini sudah ada
+use App\Models\Inspection;
 use App\Models\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
+// use PDF;
 
 class InspectController extends Controller
 {
+
     public function index(Request $request)
     {
         // Ambil semua equipment untuk dropdown filter
@@ -125,5 +128,26 @@ class InspectController extends Controller
         }
 
         return redirect()->route('inspect.index')->with('success', 'Inspection submitted successfully.');
+    }
+
+    public function printHistory(Request $request)
+    {
+        $query = History::with('equipment', 'indicator');
+        if ($request->filled('equipment_id')) {
+            $decryptedEquipmentId = Crypt::decrypt($request->input('equipment_id'));
+            $query->where('equipment_id', $decryptedEquipmentId);
+        }
+        // Ambil semua data matching tanpa pagination agar PDF mencakup seluruh data
+        $histories = $query->get();
+
+        $indicatorIds = $histories->pluck('indicator_id')->unique();
+        $rules = Rule::with('problem')
+            ->whereIn('indicator_id', $indicatorIds)
+            ->get()
+            ->groupBy('indicator_id');
+
+        $data = ['histories' => $histories, 'rules' => $rules];
+        $pdf = PDF::loadView('c_panel.inspects.pdf', $data);
+        return $pdf->download('inspection-history.pdf');
     }
 }
