@@ -10,7 +10,6 @@ use App\Models\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
-// use PDF;
 
 class InspectController extends Controller
 {
@@ -103,9 +102,14 @@ class InspectController extends Controller
                 // Ambil data indikator untuk mendapatkan baseline
                 $indicator = Indicator::find($indicatorId);
                 if ($indicator) {
-                    // Bandingkan actual dengan baseline, status disimpan sebagai boolean:
-                    // true jika actual sama dengan baseline (normal), false jika tidak (terdapat masalah)
-                    $status = ($actualValue == $indicator->baseline);
+                    // Bandingkan actual dengan baseline, status disimpan sebagai string:
+                    if ($actualValue > $indicator->baseline) {
+                        $status = 'high';
+                    } elseif ($actualValue < $indicator->baseline) {
+                        $status = 'low';
+                    } else {
+                        $status = 'normal';
+                    }
 
                     // Update record jika sudah ada, atau buat baru jika belum ada
                     History::updateOrCreate(

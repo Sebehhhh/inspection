@@ -86,14 +86,14 @@
                                                     <td>{{ $history->indicator->name }}</td>
                                                     <td>{{ $history->actual_value }}</td>
                                                     <td>
-                                                        @if ($history->status)
-                                                            <span class="badge bg-success">Normal</span>
-                                                        @else
-                                                            <span class="badge bg-danger">Problem Detected</span>
-                                                        @endif
+                                                    @if ($history->status == 'normal')
+                                                        <span class="badge bg-success">Normal</span>
+                                                    @else
+                                                        <span class="badge bg-danger">{{ ucfirst($history->status) }}</span>
+                                                    @endif
                                                     </td>
                                                     <td>
-                                                        @if (!$history->status && isset($rules[$history->indicator_id]))
+                                                        @if ($history->status != 'normal' && isset($rules[$history->indicator_id]))
                                                             @php
                                                                 // Kumpulkan data problem, further_testing, dan corrective_action untuk indikator ini
                                                                 $problemData = [];
