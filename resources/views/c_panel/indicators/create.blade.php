@@ -57,8 +57,11 @@
                                         <div class="col-md-3 col-12">
                                             <div class="form-group">
                                                 <label for="unit">Unit</label>
-                                                <input type="text" id="unit" class="form-control" name="unit"
-                                                    placeholder="Unit" required>
+                                                <select id="unit" class="form-select" name="unit" required>
+                                                    <option value="">Select Unit</option>
+                                                    <option value="Low">Low</option>
+                                                    <option value="High">High</option>
+                                                </select>
                                                 @error('unit')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror

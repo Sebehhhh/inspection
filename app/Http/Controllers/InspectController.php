@@ -99,16 +99,14 @@ class InspectController extends Controller
         // Loop setiap indicator dan update atau create record inspeksi
         foreach ($validated['actual_values'] as $indicatorId => $actualValue) {
             if (!empty($actualValue)) {
-                // Ambil data indikator untuk mendapatkan baseline
+                // Ambil data indikator untuk mendapatkan baseline dan unit
                 $indicator = Indicator::find($indicatorId);
                 if ($indicator) {
-                    // Bandingkan actual dengan baseline, status disimpan sebagai string:
-                    if ($actualValue > $indicator->baseline) {
-                        $status = 'high';
-                    } elseif ($actualValue < $indicator->baseline) {
-                        $status = 'low';
-                    } else {
-                        $status = 'normal';
+                    // Tentukan status berdasarkan unit dan baseline
+                    if ($indicator->unit === 'Low') {
+                        $status = ($actualValue < $indicator->baseline) ? 'problem detected' : 'normal';
+                    } else { // Jika unit adalah "High"
+                        $status = ($actualValue > $indicator->baseline) ? 'problem detected' : 'normal';
                     }
 
                     // Update record jika sudah ada, atau buat baru jika belum ada

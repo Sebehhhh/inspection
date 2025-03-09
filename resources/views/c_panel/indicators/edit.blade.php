@@ -64,8 +64,11 @@
 
                                     <div class="form-group">
                                         <label for="unit">Unit</label>
-                                        <input type="text" class="form-control @error('unit') is-invalid @enderror"
-                                            id="unit" name="unit" value="{{ old('unit', $indicator->unit) }}">
+                                        <select id="unit" class="form-control @error('unit') is-invalid @enderror" name="unit">
+                                            <option value="">Select Unit</option>
+                                            <option value="Low" {{ old('unit', $indicator->unit) == 'Low' ? 'selected' : '' }}>Low</option>
+                                            <option value="High" {{ old('unit', $indicator->unit) == 'High' ? 'selected' : '' }}>High</option>
+                                        </select>
                                         @error('unit')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
