@@ -73,6 +73,7 @@
                                                 <th>No.</th>
                                                 <th>Equipment</th>
                                                 <th>Indicator</th>
+                                                <th>Baseline</th>
                                                 <th>Actual Value</th>
                                                 <th>Status</th>
                                                 <th>Problem Details</th>
@@ -84,6 +85,7 @@
                                                     <td>{{ $histories->firstItem() + $index }}</td>
                                                     <td>{{ $history->equipment->name }}</td>
                                                     <td>{{ $history->indicator->name }}</td>
+                                                    <td>{{ $history->indicator->baseline }}</td>
                                                     <td>{{ $history->actual_value }}</td>
                                                     <td>
                                                     @if ($history->status == 'normal')
