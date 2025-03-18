@@ -47,7 +47,8 @@
                 </div>
             </div>
             <div class="d-flex justify-content-end mb-3">
-                <a href="{{ route('inspect.printHistory', request()->query()) }}" target="_blank" class="btn btn-primary">Print</a>
+                <a href="{{ route('inspect.printHistory', request()->query()) }}" target="_blank"
+                    class="btn btn-primary">Print</a>
             </div>
         </div>
 
@@ -63,6 +64,15 @@
                                 <i class="bi bi-search"></i> Start Inspection
                             </a>
                         </div>
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         <div class="card-content">
                             <div class="card-body">
                                 <!-- Tabel dengan outer spacing -->
@@ -76,68 +86,154 @@
                                                 <th>Baseline</th>
                                                 <th>Actual Value</th>
                                                 <th>Status</th>
-                                                <th>Problem Details</th>
+                                                <th>Problem</th>
+                                                <th>Further Testing</th>
+                                                <th>Corrective Action</th>
+                                                <th>Action Taken</th>
+                                                <th>Possible Cause</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @php
+                                                $rowspanData = [];
+                                                foreach ($histories as $history) {
+                                                    if (
+                                                        $history->status != 'normal' &&
+                                                        isset($rules[$history->indicator_id])
+                                                    ) {
+                                                        $problemCount = count($rules[$history->indicator_id]);
+                                                        $rowspanData[$history->indicator_id] = $problemCount;
+                                                    }
+                                                }
+                                            @endphp
                                             @foreach ($histories as $index => $history)
-                                                <tr>
-                                                    <td>{{ $histories->firstItem() + $index }}</td>
-                                                    <td>{{ $history->equipment->name }}</td>
-                                                    <td>{{ $history->indicator->name }}</td>
-                                                    <td>{{ $history->indicator->baseline }}</td>
-                                                    <td>{{ $history->actual_value }}</td>
-                                                    <td>
-                                                    @if ($history->status == 'normal')
-                                                        <span class="badge bg-success">Normal</span>
-                                                    @else
-                                                        <span class="badge bg-danger">{{ ucfirst($history->status) }}</span>
-                                                    @endif
-                                                    </td>
-                                                    <td>
-                                                        @if ($history->status != 'normal' && isset($rules[$history->indicator_id]))
-                                                            @php
-                                                                // Kumpulkan data problem, further_testing, dan corrective_action untuk indikator ini
-                                                                $problemData = [];
-                                                                foreach ($rules[$history->indicator_id] as $rule) {
-                                                                    if ($rule->problem) {
-                                                                        $problemData[] = [
-                                                                            'name' => $rule->problem->name,
-                                                                            'further_testing' =>
-                                                                                $rule->problem->further_testing,
-                                                                            'corrective_action' =>
-                                                                                $rule->problem->corrective_action,
-                                                                        ];
-                                                                    }
-                                                                }
-                                                            @endphp
-                                                            @if (count($problemData) > 0)
-                                                                <table class="table table-bordered mb-0">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th>Problem</th>
-                                                                            <th>Further Testing</th>
-                                                                            <th>Corrective Action</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        @foreach ($problemData as $data)
-                                                                            <tr>
-                                                                                <td>{{ $data['name'] }}</td>
-                                                                                <td>{{ $data['further_testing'] }}</td>
-                                                                                <td>{{ $data['corrective_action'] }}</td>
-                                                                            </tr>
-                                                                        @endforeach
-                                                                    </tbody>
-                                                                </table>
-                                                            @else
-                                                                -
+                                                @if ($history->status != 'normal' && isset($rules[$history->indicator_id]))
+                                                    @php
+                                                        $problemData = [];
+                                                        foreach ($rules[$history->indicator_id] as $rule) {
+                                                            if ($rule->problem) {
+                                                                $problemData[] = [
+                                                                    'id' => $rule->problem->id, // Tambahkan ID Problem
+                                                                    'name' => $rule->problem->name,
+                                                                    'further_testing' =>
+                                                                        $rule->problem->further_testing,
+                                                                    'corrective_action' =>
+                                                                        $rule->problem->corrective_action,
+                                                                    'action_taken' => $rule->problem->action_taken,
+                                                                    'possible_cause' => $rule->problem->possible_cause,
+                                                                ];
+                                                            }
+                                                        }
+                                                        $firstRow = true;
+                                                    @endphp
+                                                    @foreach ($problemData as $data)
+                                                        <tr>
+                                                            @if ($firstRow)
+                                                                <td rowspan="{{ count($problemData) }}">
+                                                                    {{ $loop->parent->index + 1 }}</td>
+                                                                <td rowspan="{{ count($problemData) }}">
+                                                                    {{ $history->equipment->name }}</td>
+                                                                <td rowspan="{{ count($problemData) }}">
+                                                                    {{ $history->indicator->name }}</td>
+                                                                <td rowspan="{{ count($problemData) }}">
+                                                                    {{ $history->indicator->baseline }}</td>
+                                                                <td rowspan="{{ count($problemData) }}">
+                                                                    {{ $history->actual_value }}</td>
+                                                                <td rowspan="{{ count($problemData) }}">
+                                                                    @if ($history->status == 'normal')
+                                                                        <span class="badge bg-success">Normal</span>
+                                                                    @else
+                                                                        <span
+                                                                            class="badge bg-danger">{{ ucfirst($history->status) }}</span>
+                                                                    @endif
+                                                                </td>
+                                                                @php $firstRow = false; @endphp
                                                             @endif
-                                                        @else
-                                                            -
-                                                        @endif
-                                                    </td>
-                                                </tr>
+                                                            <td>{{ $data['name'] }}</td>
+                                                            <td>{{ $data['further_testing'] }}</td>
+                                                            <td>{{ $data['corrective_action'] }}</td>
+                                                            <td>{{ $data['action_taken'] }}</td>
+                                                            <td>{{ $data['possible_cause'] == 1 ? 'Ya' : ($data['possible_cause'] == 0 ? 'Tidak' : '-') }}</td>
+                                                            <td>
+                                                                <!-- Tombol Edit untuk setiap problem -->
+                                                                <button class="btn btn-sm btn-warning"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#editModal{{ $history->id }}-{{ $data['id'] }}">
+                                                                    Edit
+                                                                </button>
+
+                                                                <!-- Modal Edit -->
+                                                                <div class="modal fade"
+                                                                    id="editModal{{ $history->id }}-{{ $data['id'] }}"
+                                                                    tabindex="-1" aria-labelledby="editModalLabel"
+                                                                    aria-hidden="true">
+                                                                    <div class="modal-dialog">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title" id="editModalLabel">
+                                                                                    Edit Inspection Data for
+                                                                                    {{ $data['name'] }}</h5>
+                                                                                <button type="button" class="btn-close"
+                                                                                    data-bs-dismiss="modal"
+                                                                                    aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <form method="POST"
+                                                                                    action="{{ route('inspect.update', $data['id']) }}">
+                                                                                    @csrf
+                                                                                    @method('PUT')
+                                                                                    <input type="hidden" name="problem_id"
+                                                                                        value="{{ $data['id'] }}">
+                                                                                    <div class="mb-3">
+                                                                                        <label for="action_taken"
+                                                                                            class="form-label">Tindakan yang
+                                                                                            Sudah Dilakukan</label>
+                                                                                        <input type="text"
+                                                                                            class="form-control"
+                                                                                            name="action_taken"
+                                                                                            value="{{ $data['action_taken'] }}">
+                                                                                    </div>
+                                                                                    <div class="mb-3">
+                                                                                        <label for="possible_cause"
+                                                                                            class="form-label">Kemungkinan
+                                                                                            Penyebab</label>
+                                                                                        <select
+                                                                                            name="possible_cause[{{ $data['id'] }}]"
+                                                                                            class="form-control">
+
+                                                                                            <option value="0"
+                                                                                                {{ $data['possible_cause'] == 0 ? 'selected' : '' }}>
+                                                                                                Tidak</option>
+                                                                                            <option value="1"
+                                                                                                {{ $data['possible_cause'] == 1 ? 'selected' : '' }}>
+                                                                                                Ya</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <button type="submit"
+                                                                                        class="btn btn-primary">Simpan
+                                                                                        Perubahan</button>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                @else
+                                                    <tr>
+                                                        <td>{{ $index + 1 }}</td>
+                                                        <td>{{ $history->equipment->name }}</td>
+                                                        <td>{{ $history->indicator->name }}</td>
+                                                        <td>{{ $history->indicator->baseline }}</td>
+                                                        <td>{{ $history->actual_value }}</td>
+                                                        <td>
+                                                            <span class="badge bg-success">Normal</span>
+                                                        </td>
+                                                        <td colspan="6" class="text-center">No issues detected</td>
+                                                    </tr>
+                                                @endif
                                             @endforeach
                                         </tbody>
                                     </table>

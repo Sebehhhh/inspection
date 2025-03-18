@@ -12,6 +12,8 @@ class History extends Model
         'indicator_id',
         'actual_value',
         'status',
+        'action_taken',
+        'possible_cause',
     ];
 
     public function equipment()

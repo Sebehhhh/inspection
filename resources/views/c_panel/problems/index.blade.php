@@ -67,7 +67,7 @@
                                             <tr>
                                                 <th>No.</th>
                                                 <th>Equipment</th>
-                                                <th>Name</th>
+                                                <th>Heat Loss Caused</th>
                                                 <th>Parent Problem</th>
                                                 <th>Further Testing</th>
                                                 <th>Corrective Action</th>

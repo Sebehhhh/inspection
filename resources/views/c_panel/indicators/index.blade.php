@@ -72,8 +72,8 @@
                                             <tr>
                                                 <th>No.</th>
                                                 <th>Equipment</th>
-                                                <th>Name</th>
-                                                <th>Unit</th>
+                                                <th>Heat Loss Mode</th>
+                                                <th>Polaritas</th>
                                                 <th>Baseline</th>
                                                 <th>Action</th>
                                             </tr>

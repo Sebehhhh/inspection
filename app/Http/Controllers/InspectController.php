@@ -7,6 +7,7 @@ use App\Models\History;
 use App\Models\Indicator;
 use App\Models\Inspection;
 use App\Models\Rule;
+use App\Models\Problem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
@@ -130,6 +131,28 @@ class InspectController extends Controller
         }
 
         return redirect()->route('inspect.index')->with('success', 'Inspection submitted successfully.');
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Validasi input dari form
+        $validated = $request->validate([
+            'problem_id'    => 'required|integer',
+            'action_taken'  => 'nullable|string',
+            'possible_cause'=> 'required|array',
+        ]);
+
+        // Cari data problem berdasarkan id
+        $problem = Problem::findOrFail($id);
+
+        // Update kolom action_taken dan possible_cause
+        $problem->action_taken = $request->input('action_taken');
+        $possibleCauseArray = $request->input('possible_cause');
+        $problem->possible_cause = isset($possibleCauseArray[$id]) ? $possibleCauseArray[$id] : null;
+
+        $problem->save();
+
+        return redirect()->route('inspect.index')->with('success', 'Data inspeksi berhasil diperbarui.');
     }
 
     public function printHistory(Request $request)

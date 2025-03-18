@@ -16,6 +16,8 @@ class Problem extends Model
         'name',
         'further_testing',
         'corrective_action',
+        'possible_cause',
+        'action_taken',
     ];
 
     public function equipment()
