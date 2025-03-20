@@ -10,6 +10,7 @@ class IndicatorImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         return new Indicator([
+            // 'id'           => $row['id'],
             'equipment_id' => $row['equipment_id'],
             'name'         => $row['name'],
             'unit'         => $row['unit'],

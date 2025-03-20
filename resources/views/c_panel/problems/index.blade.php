@@ -84,6 +84,7 @@
                                         <tbody>
                                             @php
                                                 $groupedProblems = $problems->sortBy('equipment_id')->groupBy('equipment_id');
+                                                $counter = 1;
                                             @endphp
                                             @foreach ($groupedProblems as $equipment_id => $equipmentProblems)
                                                 @php
@@ -91,11 +92,10 @@
                                                 @endphp
                                                 @foreach ($equipmentProblems as $index => $problem)
                                                     <tr>
-                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $counter++ }}</td>
                                                         @if ($index == 0)
                                                             <td rowspan="{{ $rowspan }}" class="text-bold-500">{{ $problem->equipment->name }}</td>
                                                         @endif
-                                                       
                                                         <td class="text-bold-500">{{ $problem->name }}</td>
                                                         <td>{{ $problem->further_testing }}</td>
                                                         <td>{{ $problem->corrective_action }}</td>

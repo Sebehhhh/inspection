@@ -27,8 +27,8 @@ class ProblemController extends Controller
             $query->where('equipment_id', $decryptedEquipmentId);
         }
 
-        // Menggunakan paginate(10) agar data ditampilkan 10 per halaman
-        $problems = $query->paginate(10);
+        // Urutkan berdasarkan equipment_id secara ascending
+        $problems = $query->orderBy('equipment_id', 'asc')->paginate(10);
 
         return view('c_panel.problems.index', compact('problems', 'allEquipments'));
     }
@@ -105,7 +105,7 @@ class ProblemController extends Controller
             public function model(array $row)
             {
                 return new Problem([
-                    'id'                 => $row['id'], // Menggunakan ID dari file Excel
+                    // 'id'                 => $row['id'], // Menggunakan ID dari file Excel
                     'equipment_id'       => $row['equipment_id'],
                     'parent_problem_id'  => $row['parent_problem_id'],
                     'name'               => $row['name'],

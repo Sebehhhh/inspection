@@ -23,7 +23,7 @@ class IndicatorController extends Controller
             public function model(array $row)
             {
                 return new Indicator([
-                    'id'           => $row['id'], // Menggunakan ID dari file Excel
+                    // 'id'           => $row['id'], // Menggunakan ID dari file Excel
                     'equipment_id' => $row['equipment_id'],
                     'name'         => $row['name'],
                     'unit'         => $row['unit'],

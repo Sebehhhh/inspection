@@ -16,7 +16,7 @@ class ProblemImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         return new Problem([
-            'id'                 => $row['id'],
+            // 'id'                 => $row['id'],
             'equipment_id'       => $row['equipment_id'],
             'parent_problem_id'  => $row['parent_problem_id'],
             'name'               => $row['name'],

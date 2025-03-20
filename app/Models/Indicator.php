@@ -8,7 +8,7 @@ class Indicator extends Model
 {
    protected $table = 'indicators';
    protected $primaryKey = 'id';
-   protected $fillable = ['name', 'equipment_id', 'unit', 'baseline'];
+   protected $fillable = ['id','name', 'equipment_id', 'unit', 'baseline'];
 
    public function equipment()
    {
