@@ -59,9 +59,16 @@
                 <div class="col-12 col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <a href="{{ route('indicator.create') }}" class="btn btn-success btn-sm float-end">
+                            <a href="{{ route('indicator.create') }}" class="btn btn-success btn-sm float-end ms-2">
                                 <i class="bi bi-plus"></i> Add
                             </a>
+                            <form action="{{ route('indicator.importExcel') }}" method="POST" enctype="multipart/form-data" class="d-inline">
+                                @csrf
+                                <input type="file" name="file" class="form-control d-inline w-auto" required>
+                                <button type="submit" class="btn btn-info btn-sm">
+                                    <i class="bi bi-upload"></i> Import from Excel
+                                </button>
+                            </form>
                         </div>
                         <div class="card-content">
                             <div class="card-body">
@@ -106,9 +113,9 @@
                                     </table>
                                 </div>
                                 <!-- Jika menggunakan pagination Laravel, tambahkan links disini -->
-                                {{-- <div class="d-flex justify-content-center mt-3">
+                                <div class="d-flex justify-content-center mt-3">
                                     {{ $indicators->links('pagination::bootstrap-4') }}
-                                </div> --}}
+                                </div>
                             </div>
                         </div>
                     </div>

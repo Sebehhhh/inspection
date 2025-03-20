@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Equipment extends Model
 {
+    public $incrementing = false;
     protected $table = 'equipments';
-    protected $fillable = ['name', 'description'];
+    protected $primaryKey = 'id';
+    protected $fillable = ['id','name', 'description'];
 }

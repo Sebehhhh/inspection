@@ -28,4 +28,7 @@ Route::middleware(['auth'])->group(function () {
     //print history
     Route::get('/inspect/print', [InspectController::class, 'printHistory'])->name('inspect.printHistory');
     Route::get('/inspect/export-excel', [InspectController::class, 'exportExcel'])->name('inspect.exportExcel');
+    
+    Route::post('/equipment/import-excel', [EquipmentController::class, 'importExcel'])->name('equipment.importExcel');
+    Route::post('/indicator/import-excel', [IndicatorController::class, 'importExcel'])->name('indicator.importExcel');
 });

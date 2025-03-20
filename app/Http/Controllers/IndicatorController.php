@@ -6,9 +6,37 @@ use App\Models\Equipment;
 use App\Models\Indicator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\IndicatorImport;
+use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class IndicatorController extends Controller
 {
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv',
+        ]);
+
+        Excel::import(new class implements ToModel, WithHeadingRow {
+            public function model(array $row)
+            {
+                return new Indicator([
+                    'id'           => $row['id'], // Menggunakan ID dari file Excel
+                    'equipment_id' => $row['equipment_id'],
+                    'name'         => $row['name'],
+                    'unit'         => $row['unit'],
+                    'baseline'     => $row['baseline'],
+                    'created_at'   => now(),
+                    'updated_at'   => now(),
+                ]);
+            }
+        }, $request->file('file'));
+
+        return redirect()->route('indicator.index')->with('success', 'Indicator data imported successfully.');
+    }
+
     public function index(Request $request)
     {
         // Ambil semua equipment untuk dropdown filter

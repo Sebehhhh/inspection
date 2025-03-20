@@ -5,9 +5,35 @@ namespace App\Http\Controllers;
 use App\Models\Equipment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\EquipmentImport;
+use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class EquipmentController extends Controller
 {
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv',
+        ]);
+    
+        Excel::import(new class implements ToModel, WithHeadingRow {
+            public function model(array $row)
+            {
+                return new Equipment([
+                    'id'          => $row['id'], // Menggunakan ID dari file Excel
+                    'name'        => $row['name'],
+                    'description' => $row['description'],
+                    'created_at'  => now(),
+                    'updated_at'  => now(),
+                ]);
+            }
+        }, $request->file('file'));
+    
+        return redirect()->route('equipment.index')->with('success', 'Equipment data imported successfully.');
+    }
+
     public function index()
     {
         // Menggunakan paginate(10) untuk menampilkan 10 data per halaman
@@ -27,7 +53,6 @@ class EquipmentController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        // Menggunakan data yang sudah divalidasi
         Equipment::create($validatedData);
         return redirect()->route('equipment.index')->with('success', 'Equipment created successfully.');
     }
