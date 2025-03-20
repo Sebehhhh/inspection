@@ -43,7 +43,7 @@
                                     <table id="equipmentTable" class="table table-lg">
                                         <thead>
                                             <tr>
-                                                <th>No.</th>
+                                                <th>ID</th>
                                                 <th>Name</th>
                                                 <th>Description</th>
                                                 <th>Action</th>
@@ -52,7 +52,7 @@
                                         <tbody>
                                             @foreach ($equipments as $index => $equipment)
                                                 <tr>
-                                                    <td>{{ $index + 1 }}</td>
+                                                    <td>{{ $equipment->id }}</td>
                                                     <td>{{ $equipment->name }}</td>
                                                     <td>{{ $equipment->description }}</td>
                                                     <td>

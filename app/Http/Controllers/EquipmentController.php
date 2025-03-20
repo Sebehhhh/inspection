@@ -53,6 +53,10 @@ class EquipmentController extends Controller
             'description' => 'nullable|string',
         ]);
 
+        // Ambil ID terbesar dan tambah 1
+        $maxId = Equipment::max('id') ?? 0;
+        $validatedData['id'] = $maxId + 1;
+
         Equipment::create($validatedData);
         return redirect()->route('equipment.index')->with('success', 'Equipment created successfully.');
     }
