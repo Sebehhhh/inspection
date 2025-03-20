@@ -174,7 +174,7 @@ class InspectController extends Controller
         } else {
             $query->whereDate('created_at', $request->input('inspection_date'));
         }
-        
+
         // Ambil semua data matching tanpa pagination agar PDF mencakup seluruh data
         $histories = $query->get();
 
@@ -192,5 +192,23 @@ class InspectController extends Controller
     public function exportExcel(Request $request)
     {
         return Excel::download(new InspectionExport($request), 'inspection-history.xlsx');
+    }
+
+    public function deleteAll(Request $request)
+    {
+        $query = History::query();
+
+        if ($request->filled('equipment_id')) {
+            $decryptedEquipmentId = Crypt::decrypt($request->equipment_id);
+            $query->where('equipment_id', $decryptedEquipmentId);
+        }
+
+        if ($request->filled('inspection_date')) {
+            $query->whereDate('created_at', $request->inspection_date);
+        }
+
+        $query->delete();
+
+        return redirect()->route('inspect.index')->with('success', 'Selected inspections deleted successfully.');
     }
 }

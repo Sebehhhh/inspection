@@ -92,6 +92,14 @@
                                         @endif
                                     </div>
                                 </form>
+                                <div class="d-flex justify-content-end mb-3">
+                                    <form method="POST" action="{{ route('inspect.deleteAll') }}" onsubmit="return confirm('Are you sure you want to delete all selected inspections?');">
+                                        @csrf
+                                        <input type="hidden" name="equipment_id" value="{{ request('equipment_id') }}">
+                                        <input type="hidden" name="inspection_date" value="{{ request('inspection_date') }}">
+                                        <button type="submit" class="btn btn-danger">Delete All</button>
+                                    </form>
+                                </div>
                                 <!-- Tabel dengan outer spacing -->
                                 <div class="table-responsive">
                                     <table class="table table-bordered">

@@ -22,6 +22,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('problem', ProblemController::class);
     Route::resource('rules', RuleController::class);
     Route::resource('inspect', InspectController::class)->except(['show']);
+    Route::post('/inspect/delete-all', [InspectController::class, 'deleteAll'])->name('inspect.deleteAll');
     Route::resource('user', UserController::class);
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -29,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/inspect/print', [InspectController::class, 'printHistory'])->name('inspect.printHistory');
     Route::get('/inspect/export-excel', [InspectController::class, 'exportExcel'])->name('inspect.exportExcel');
     
+    //import excel
     Route::post('/equipment/import-excel', [EquipmentController::class, 'importExcel'])->name('equipment.importExcel');
     Route::post('/indicator/import-excel', [IndicatorController::class, 'importExcel'])->name('indicator.importExcel');
     Route::post('/problem/import-excel', [ProblemController::class, 'importExcel'])->name('problem.importExcel');
