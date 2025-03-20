@@ -50,6 +50,15 @@ class ProblemController extends Controller
             'corrective_action'   => 'nullable|string',
         ]);
 
+        // Jika problem memiliki parent, ambil nilai further_testing dan corrective_action dari parent
+        if (!empty($validatedData['parent_problem_id'])) {
+            $parentProblem = Problem::find($validatedData['parent_problem_id']);
+            if ($parentProblem) {
+                $validatedData['further_testing'] = $parentProblem->further_testing;
+                $validatedData['corrective_action'] = $parentProblem->corrective_action;
+            }
+        }
+
         Problem::create($validatedData);
         return redirect()->route('problem.index')->with('success', 'Problem created successfully.');
     }

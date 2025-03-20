@@ -68,7 +68,7 @@
                                                 <th>No.</th>
                                                 <th>Equipment</th>
                                                 <th>Heat Loss Caused</th>
-                                                <th>Parent Problem</th>
+                                                {{-- <th>Parent Problem</th> --}}
                                                 <th>Further Testing</th>
                                                 <th>Corrective Action</th>
                                                 <th>Action</th>
@@ -80,7 +80,7 @@
                                                     <td class="text-bold-500">{{ $problems->firstItem() + $index }}</td>
                                                     <td>{{ $problem->equipment->name }}</td>
                                                     <td class="text-bold-500">{{ $problem->name }}</td>
-                                                    <td>{{ optional($problem->parentProblem)->name }}</td>
+                                                    {{-- <td>{{ optional($problem->parentProblem)->name }}</td> --}}
                                                     <td>{{ $problem->further_testing }}</td>
                                                     <td>{{ $problem->corrective_action }}</td>
                                                     <td>

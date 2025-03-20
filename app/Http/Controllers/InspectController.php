@@ -11,6 +11,8 @@ use App\Models\Problem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\InspectionExport;
 
 class InspectController extends Controller
 {
@@ -25,13 +27,19 @@ class InspectController extends Controller
 
         // Jika ada parameter equipment_id terenkripsi, dekripsi dan filter berdasarkan equipment tersebut
         if ($request->filled('equipment_id')) {
-
             $decryptedEquipmentId = Crypt::decrypt($request->input('equipment_id'));
             $query->where('equipment_id', $decryptedEquipmentId);
         }
 
-        // Ambil histories dengan pagination 10 per halaman
-        $histories = $query->paginate(10);
+        // Jika ada parameter inspection_date, filter berdasarkan tanggal inspeksi
+        if (!$request->filled('inspection_date')) {
+            $query->whereDate('created_at', now());
+        } else {
+            $query->whereDate('created_at', $request->input('inspection_date'));
+        }
+
+        // Ambil histories tanpa pagination
+        $histories = $query->get();
 
         // Ambil daftar unik indicator_id dari history pada halaman ini
         $indicatorIds = $histories->pluck('indicator_id')->unique();
@@ -53,7 +61,6 @@ class InspectController extends Controller
     {
         // Jika parameter equipment_id terenkripsi ada, coba dekripsi, jika gagal gunakan equipment pertama
         if ($request->filled('equipment_id')) {
-
             $decryptedEquipmentId = Crypt::decrypt($request->input('equipment_id'));
             $equipment = Equipment::findOrFail($decryptedEquipmentId);
         } else {
@@ -81,6 +88,7 @@ class InspectController extends Controller
         $validated = $request->validate([
             'equipment_id'  => 'required|string', // terenkripsi
             'actual_values' => 'required|array',
+            'inspection_date' => 'nullable|date', // Tambahkan validasi tanggal inspeksi
         ]);
 
         // Dekripsi equipment_id
@@ -110,17 +118,14 @@ class InspectController extends Controller
                         $status = ($actualValue > $indicator->baseline) ? 'problem detected' : 'normal';
                     }
 
-                    // Update record jika sudah ada, atau buat baru jika belum ada
-                    History::updateOrCreate(
-                        [
-                            'equipment_id' => $equipment->id,
-                            'indicator_id' => $indicatorId,
-                        ],
-                        [
-                            'actual_value' => $actualValue,
-                            'status'       => $status,
-                        ]
-                    );
+                    // Tambahkan record baru dengan timestamp inspeksi
+                    History::create([
+                        'equipment_id'    => $equipment->id,
+                        'indicator_id'    => $indicatorId,
+                        'actual_value'    => $actualValue,
+                        'status'          => $status,
+                        'inspection_date' => now(), // Tambahkan tanggal inspeksi
+                    ]);
                 }
             } else {
                 // Jika nilai actual kosong, kita bisa memilih untuk menghapus record yang sudah ada
@@ -139,7 +144,7 @@ class InspectController extends Controller
         $validated = $request->validate([
             'problem_id'    => 'required|integer',
             'action_taken'  => 'nullable|string',
-            'possible_cause'=> 'required|array',
+            'possible_cause' => 'required|array',
         ]);
 
         // Cari data problem berdasarkan id
@@ -158,10 +163,18 @@ class InspectController extends Controller
     public function printHistory(Request $request)
     {
         $query = History::with('equipment', 'indicator');
+
         if ($request->filled('equipment_id')) {
             $decryptedEquipmentId = Crypt::decrypt($request->input('equipment_id'));
             $query->where('equipment_id', $decryptedEquipmentId);
         }
+
+        if (!$request->filled('inspection_date')) {
+            $query->whereDate('created_at', now()->toDateString());
+        } else {
+            $query->whereDate('created_at', $request->input('inspection_date'));
+        }
+        
         // Ambil semua data matching tanpa pagination agar PDF mencakup seluruh data
         $histories = $query->get();
 
@@ -174,5 +187,10 @@ class InspectController extends Controller
         $data = ['histories' => $histories, 'rules' => $rules];
         $pdf = PDF::loadView('c_panel.inspects.pdf', $data);
         return $pdf->download('inspection-history.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        return Excel::download(new InspectionExport($request), 'inspection-history.xlsx');
     }
 }

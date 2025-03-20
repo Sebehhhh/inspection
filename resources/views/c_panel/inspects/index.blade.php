@@ -47,8 +47,8 @@
                 </div>
             </div>
             <div class="d-flex justify-content-end mb-3">
-                <a href="{{ route('inspect.printHistory', request()->query()) }}" target="_blank"
-                    class="btn btn-primary">Print</a>
+                <a href="{{ route('inspect.printHistory', request()->query()) }}" target="_blank" class="btn btn-primary">Print</a>
+                <a href="{{ route('inspect.exportExcel', request()->query()) }}" class="btn btn-success ms-2">Export to Excel</a>
             </div>
         </div>
 
@@ -75,6 +75,23 @@
                         @endif
                         <div class="card-content">
                             <div class="card-body">
+                                <!-- Filter berdasarkan tanggal inspeksi -->
+                                <form method="GET" action="{{ route('inspect.index') }}" class="mb-3">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="inspection_date">Filter by Inspection Date</label>
+                                            <input type="date" name="inspection_date" id="inspection_date"
+                                                class="form-control"
+                                                value="{{ request('inspection_date', now()->toDateString()) }}"
+                                                onchange="this.form.submit()">
+                                        </div>
+                                        <!-- Pastikan equipment_id tetap ada jika sudah difilter sebelumnya -->
+                                        @if (request()->filled('equipment_id'))
+                                            <input type="hidden" name="equipment_id"
+                                                value="{{ request('equipment_id') }}">
+                                        @endif
+                                    </div>
+                                </form>
                                 <!-- Tabel dengan outer spacing -->
                                 <div class="table-responsive">
                                     <table class="table table-bordered">
@@ -154,7 +171,8 @@
                                                             <td>{{ $data['further_testing'] }}</td>
                                                             <td>{{ $data['corrective_action'] }}</td>
                                                             <td>{{ $data['action_taken'] }}</td>
-                                                            <td>{{ $data['possible_cause'] == 1 ? 'Ya' : ($data['possible_cause'] == 0 ? 'Tidak' : '-') }}</td>
+                                                            <td>{{ $data['possible_cause'] == 1 ? 'Ya' : ($data['possible_cause'] == 0 ? 'Tidak' : '-') }}
+                                                            </td>
                                                             <td>
                                                                 <!-- Tombol Edit untuk setiap problem -->
                                                                 <button class="btn btn-sm btn-warning"
@@ -238,10 +256,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <!-- Pagination links -->
-                                <div class="d-flex justify-content-center mt-3">
-                                    {{ $histories->links('pagination::bootstrap-4') }}
-                                </div>
+                                <!-- Pagination dihapus karena semua data ditampilkan -->
                             </div>
                         </div>
                     </div>
