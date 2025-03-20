@@ -57,6 +57,13 @@
                             <a href="{{ route('problem.create') }}" class="btn btn-success btn-sm float-end">
                                 <i class="bi bi-plus"></i> Add
                             </a>
+                            <form action="{{ route('problem.importExcel') }}" method="POST" enctype="multipart/form-data" class="d-inline">
+                                @csrf
+                                <input type="file" name="file" class="form-control d-inline w-auto" required>
+                                <button type="submit" class="btn btn-info btn-sm">
+                                    <i class="bi bi-upload"></i> Import from Excel
+                                </button>
+                            </form>
                         </div>
                         <div class="card-content">
                             <div class="card-body">
@@ -75,29 +82,37 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($problems as $index => $problem)
-                                                <tr>
-                                                    <td class="text-bold-500">{{ $problems->firstItem() + $index }}</td>
-                                                    <td>{{ $problem->equipment->name }}</td>
-                                                    <td class="text-bold-500">{{ $problem->name }}</td>
-                                                    {{-- <td>{{ optional($problem->parentProblem)->name }}</td> --}}
-                                                    <td>{{ $problem->further_testing }}</td>
-                                                    <td>{{ $problem->corrective_action }}</td>
-                                                    <td>
-                                                        <a href="{{ route('problem.edit', encrypt($problem->id)) }}"
-                                                            class="btn btn-primary btn-sm">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </a>
-                                                        <form action="{{ route('problem.destroy', $problem->id) }}"
-                                                            method="POST" style="display:inline;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
+                                            @php
+                                                $groupedProblems = $problems->sortBy('equipment_id')->groupBy('equipment_id');
+                                            @endphp
+                                            @foreach ($groupedProblems as $equipment_id => $equipmentProblems)
+                                                @php
+                                                    $rowspan = count($equipmentProblems);
+                                                @endphp
+                                                @foreach ($equipmentProblems as $index => $problem)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        @if ($index == 0)
+                                                            <td rowspan="{{ $rowspan }}" class="text-bold-500">{{ $problem->equipment->name }}</td>
+                                                        @endif
+                                                       
+                                                        <td class="text-bold-500">{{ $problem->name }}</td>
+                                                        <td>{{ $problem->further_testing }}</td>
+                                                        <td>{{ $problem->corrective_action }}</td>
+                                                        <td>
+                                                            <a href="{{ route('problem.edit', encrypt($problem->id)) }}" class="btn btn-primary btn-sm">
+                                                                <i class="bi bi-pencil"></i>
+                                                            </a>
+                                                            <form action="{{ route('problem.destroy', $problem->id) }}" method="POST" style="display:inline;">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
                                             @endforeach
                                         </tbody>
                                     </table>

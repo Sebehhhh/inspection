@@ -6,6 +6,10 @@ use App\Models\Equipment;
 use App\Models\Problem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use App\Imports\ProblemImport;
+use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProblemController extends Controller
 {
@@ -28,8 +32,6 @@ class ProblemController extends Controller
 
         return view('c_panel.problems.index', compact('problems', 'allEquipments'));
     }
-
-
 
     public function create()
     {
@@ -91,5 +93,32 @@ class ProblemController extends Controller
     {
         $problem->delete();
         return redirect()->route('problem.index')->with('success', 'Problem deleted successfully.');
+    }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv',
+        ]);
+
+        Excel::import(new class implements ToModel, WithHeadingRow {
+            public function model(array $row)
+            {
+                return new Problem([
+                    'id'                 => $row['id'], // Menggunakan ID dari file Excel
+                    'equipment_id'       => $row['equipment_id'],
+                    'parent_problem_id'  => $row['parent_problem_id'],
+                    'name'               => $row['name'],
+                    'further_testing'    => $row['further_testing'],
+                    'corrective_action'  => $row['corrective_action'],
+                    'action_taken'       => $row['action_taken'],
+                    'possible_cause'     => $row['possible_cause'],
+                    'created_at'         => now(),
+                    'updated_at'         => now(),
+                ]);
+            }
+        }, $request->file('file'));
+
+        return redirect()->route('problem.index')->with('success', 'Problem data imported successfully.');
     }
 }

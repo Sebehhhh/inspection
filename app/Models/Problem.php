@@ -11,6 +11,7 @@ class Problem extends Model
     use HasFactory;
 
     protected $fillable = [
+        'id',
         'equipment_id',
         'parent_problem_id',
         'name',

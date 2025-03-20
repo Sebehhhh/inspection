@@ -31,4 +31,5 @@ Route::middleware(['auth'])->group(function () {
     
     Route::post('/equipment/import-excel', [EquipmentController::class, 'importExcel'])->name('equipment.importExcel');
     Route::post('/indicator/import-excel', [IndicatorController::class, 'importExcel'])->name('indicator.importExcel');
+    Route::post('/problem/import-excel', [ProblemController::class, 'importExcel'])->name('problem.importExcel');
 });
