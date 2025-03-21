@@ -39,6 +39,7 @@
                                                 <th>No.</th>
                                                 <th>Name</th>
                                                 <th>Email</th>
+                                                <th>Role</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -48,6 +49,14 @@
                                                     <td>{{ $index + 1 }}</td>
                                                     <td>{{ $user->name }}</td>
                                                     <td>{{ $user->email }}</td>
+                                                    <td>
+                                                        @if ($user->is_admin == 1)
+                                                            <span class="badge bg-success">Admin</span>
+                                                            
+                                                        @else
+                                                            <span class="badge bg-secondary">Non-Admin</span>
+                                                        @endif
+                                                    </td>
                                                     <td>
                                                         <a href="{{ route('user.edit', encrypt($user->id)) }}"
                                                             class="btn btn-primary btn-sm">

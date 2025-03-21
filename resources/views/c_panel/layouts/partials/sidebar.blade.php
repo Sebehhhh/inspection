@@ -44,29 +44,6 @@
                     </a>
                 </li>
 
-                <li
-                    class="sidebar-item has-sub {{ request()->routeIs('equipment.index') || request()->routeIs('indicator.index') || request()->routeIs('problem.index') || request()->routeIs('rules.index') ? 'active' : '' }}">
-                    <a href="#" class="sidebar-link">
-                        <i class="bi bi-stack"></i>
-                        <span>Master Data</span>
-                    </a>
-                    <ul class="submenu">
-                        <li class="submenu-item {{ request()->routeIs('equipment.index') ? 'active' : '' }}">
-                            <a href="{{ route('equipment.index') }}">Equipment</a>
-                        </li>
-                        <li class="submenu-item {{ request()->routeIs('indicator.index') ? 'active' : '' }}">
-                            <a href="{{ route('indicator.index') }}">Heat Loss Mode</a>
-                        </li>
-                        <li class="submenu-item {{ request()->routeIs('problem.index') ? 'active' : '' }}">
-                            <a href="{{ route('problem.index') }}">Heat Loss Caused</a>
-                        </li>
-                        <li class="submenu-item {{ request()->routeIs('rules.index') ? 'active' : '' }}">
-                            <a href="{{ route('rules.index') }}">Rules</a>
-                        </li>
-                    </ul>
-                </li>
-
-                <!-- Menu Inspect ditambahkan di sini -->
                 <li class="sidebar-item {{ request()->routeIs('inspect.index') ? 'active' : '' }}">
                     <a href="{{ route('inspect.index') }}" class="sidebar-link">
                         <i class="bi bi-search"></i>
@@ -74,13 +51,35 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item {{ request()->routeIs('user.index') ? 'active' : '' }}">
-                    <a href="{{ route('user.index') }}" class="sidebar-link">
-                        <i class="bi bi-person"></i>
-                        <span>User</span>
-                    </a>
-                </li>
+                @if(auth()->user()->is_admin)
+                    <li class="sidebar-item has-sub {{ request()->routeIs('equipment.index') || request()->routeIs('indicator.index') || request()->routeIs('problem.index') || request()->routeIs('rules.index') ? 'active' : '' }}">
+                        <a href="#" class="sidebar-link">
+                            <i class="bi bi-stack"></i>
+                            <span>Master Data</span>
+                        </a>
+                        <ul class="submenu">
+                            <li class="submenu-item {{ request()->routeIs('equipment.index') ? 'active' : '' }}">
+                                <a href="{{ route('equipment.index') }}">Equipment</a>
+                            </li>
+                            <li class="submenu-item {{ request()->routeIs('indicator.index') ? 'active' : '' }}">
+                                <a href="{{ route('indicator.index') }}">Heat Loss Mode</a>
+                            </li>
+                            <li class="submenu-item {{ request()->routeIs('problem.index') ? 'active' : '' }}">
+                                <a href="{{ route('problem.index') }}">Heat Loss Caused</a>
+                            </li>
+                            <li class="submenu-item {{ request()->routeIs('rules.index') ? 'active' : '' }}">
+                                <a href="{{ route('rules.index') }}">Rules</a>
+                            </li>
+                        </ul>
+                    </li>
 
+                    <li class="sidebar-item {{ request()->routeIs('user.index') ? 'active' : '' }}">
+                        <a href="{{ route('user.index') }}" class="sidebar-link">
+                            <i class="bi bi-person"></i>
+                            <span>User</span>
+                        </a>
+                    </li>
+                @endif
 
                 <li class="sidebar-item">
                     <a href="{{ route('logout') }}" class="sidebar-link"

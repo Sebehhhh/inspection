@@ -60,6 +60,17 @@
                                                 @enderror
                                             </div>
                                         </div>
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group">
+                                                <label class="form-check-label" for="is_admin">Is Admin</label>
+                                                <div class="form-check">
+                                                    <input type="checkbox" id="is_admin" class="form-check-input" name="is_admin" value="1">
+                                                </div>
+                                                @error('is_admin')
+                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
                                         <div class="col-12 d-flex justify-content-end">
                                             <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
                                             <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>

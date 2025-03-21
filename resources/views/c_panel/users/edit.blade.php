@@ -64,6 +64,17 @@
                                         @enderror
                                     </div>
 
+                                    <div class="form-group">
+                                        <label class="form-check-label" for="is_admin">Is Admin</label>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="is_admin" name="is_admin" value="1" 
+                                                {{ old('is_admin', $user->is_admin) ? 'checked' : '' }}>
+                                        </div>
+                                        @error('is_admin')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
                                     <div class="mt-3">
                                         <button type="submit" class="btn btn-primary">Save Changes</button>
                                         <a href="{{ route('user.index') }}" class="btn btn-secondary">Back</a>
