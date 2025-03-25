@@ -17,26 +17,29 @@ class EquipmentController extends Controller
         $request->validate([
             'file' => 'required|mimes:xlsx,csv',
         ]);
-    
-        Excel::import(new class implements ToModel, WithHeadingRow {
-            public function model(array $row)
-            {
-                return new Equipment([
-                    'id'          => $row['id'], // Menggunakan ID dari file Excel
-                    'name'        => $row['name'],
-                    'description' => $row['description'],
-                    'created_at'  => now(),
-                    'updated_at'  => now(),
-                ]);
-            }
-        }, $request->file('file'));
-    
-        return redirect()->route('equipment.index')->with('success', 'Equipment data imported successfully.');
+
+        try {
+            Excel::import(new class implements ToModel, WithHeadingRow {
+                public function model(array $row)
+                {
+                    return new Equipment([
+                        'id'          => $row['id'],
+                        'name'        => $row['name'],
+                        'description' => $row['description'],
+                        'created_at'  => now(),
+                        'updated_at'  => now(),
+                    ]);
+                }
+            }, $request->file('file'));
+
+            return redirect()->route('equipment.index')->with('success', 'Equipment data imported successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('equipment.index')->with('error', 'Failed to import data. Please check for duplicates or errors.');
+        }
     }
 
     public function index()
     {
-        // Menggunakan paginate(10) untuk menampilkan 10 data per halaman
         $equipments = Equipment::all();
         return view('c_panel.equipments.index', compact('equipments'));
     }
@@ -49,16 +52,19 @@ class EquipmentController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name'        => 'required|string|max:255',
+            'name'        => 'required|string|max:255|unique:equipments,name',
             'description' => 'nullable|string',
         ]);
 
-        // Ambil ID terbesar dan tambah 1
-        $maxId = Equipment::max('id') ?? 0;
-        $validatedData['id'] = $maxId + 1;
+        try {
+            $maxId = Equipment::max('id') ?? 0;
+            $validatedData['id'] = $maxId + 1;
+            Equipment::create($validatedData);
 
-        Equipment::create($validatedData);
-        return redirect()->route('equipment.index')->with('success', 'Equipment created successfully.');
+            return redirect()->route('equipment.index')->with('success', 'Equipment created successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('equipment.index')->with('error', 'Failed to create equipment. Please try again.');
+        }
     }
 
     public function edit($encryptedId)
@@ -71,17 +77,25 @@ class EquipmentController extends Controller
     public function update(Request $request, Equipment $equipment)
     {
         $validatedData = $request->validate([
-            'name'        => 'required|string|max:255',
+            'name'        => 'required|string|max:255|unique:equipments,name,' . $equipment->id,
             'description' => 'nullable|string',
         ]);
 
-        $equipment->update($validatedData);
-        return redirect()->route('equipment.index')->with('success', 'Equipment updated successfully.');
+        try {
+            $equipment->update($validatedData);
+            return redirect()->route('equipment.index')->with('success', 'Equipment updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('equipment.index')->with('error', 'Failed to update equipment. Please try again.');
+        }
     }
 
     public function destroy(Equipment $equipment)
     {
-        $equipment->delete();
-        return redirect()->route('equipment.index')->with('success', 'Equipment deleted successfully.');
+        try {
+            $equipment->delete();
+            return redirect()->route('equipment.index')->with('success', 'Equipment deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('equipment.index')->with('error', 'Failed to delete equipment. Please try again.');
+        }
     }
 }

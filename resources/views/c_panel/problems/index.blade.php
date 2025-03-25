@@ -69,6 +69,11 @@
                             <div class="card-body">
                                 <!-- Table with outer spacing -->
                                 <div class="table-responsive">
+                                    @if(session('error'))
+                                        <div class="alert alert-danger">
+                                            {!! nl2br(e(session('error'))) !!}
+                                        </div>
+                                    @endif
                                     <table class="table table-lg">
                                         <thead>
                                             <tr>
@@ -83,8 +88,13 @@
                                         </thead>
                                         <tbody>
                                             @php
-                                                $groupedProblems = $problems->sortBy('equipment_id')->groupBy('equipment_id');
-                                                $counter = 1;
+                                                try {
+                                                    $groupedProblems = $problems->sortBy('equipment_id')->groupBy('equipment_id');
+                                                    $counter = 1;
+                                                } catch (\Exception $e) {
+                                                    $groupedProblems = collect();
+                                                    session()->flash('error', 'Terjadi kesalahan saat memuat data.');
+                                                }
                                             @endphp
                                             @foreach ($groupedProblems as $equipment_id => $equipmentProblems)
                                                 @php

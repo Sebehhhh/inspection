@@ -74,6 +74,19 @@
                             <div class="card-body">
                                 <!-- Table with outer spacing -->
                                 <div class="table-responsive">
+                                    @if(session('error'))
+                                        <div class="alert alert-danger">
+                                            {!! nl2br(e(session('error'))) !!}
+                                        </div>
+                                    @endif
+                                    @php
+                                        try {
+                                            $indicators = $indicators ?? collect(); // Pastikan $indicators tidak null
+                                        } catch (\Exception $e) {
+                                            session()->flash('error', 'Terjadi kesalahan saat memuat data.');
+                                            $indicators = collect(); // Pastikan variabel tetap ada
+                                        }
+                                    @endphp
                                     <table class="table table-lg">
                                         <thead>
                                             <tr>
@@ -86,29 +99,35 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($indicators as $index => $indicator)
+                                            @if($indicators->isNotEmpty())
+                                                @foreach ($indicators as $index => $indicator)
+                                                    <tr>
+                                                        <td class="text-bold-500">{{ $index + 1 }}</td>
+                                                        <td>{{ $indicator->equipment->name ?? 'N/A' }}</td>
+                                                        <td class="text-bold-500">{{ $indicator->name ?? 'N/A' }}</td>
+                                                        <td>{{ $indicator->unit ?? 'N/A' }}</td>
+                                                        <td>{{ $indicator->baseline ?? 'N/A' }}</td>
+                                                        <td>
+                                                            <a href="{{ route('indicator.edit', Crypt::encrypt($indicator->id)) }}"
+                                                                class="btn btn-primary btn-sm">
+                                                                <i class="bi bi-pencil"></i>
+                                                            </a>
+                                                            <form action="{{ route('indicator.destroy', $indicator->id) }}"
+                                                                method="POST" style="display:inline;">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @else
                                                 <tr>
-                                                    <td class="text-bold-500">{{ $index + 1 }}</td>
-                                                    <td>{{ $indicator->equipment->name }}</td>
-                                                    <td class="text-bold-500">{{ $indicator->name }}</td>
-                                                    <td>{{ $indicator->unit }}</td>
-                                                    <td>{{ $indicator->baseline }}</td>
-                                                    <td>
-                                                        <a href="{{ route('indicator.edit', Crypt::encrypt($indicator->id)) }}"
-                                                            class="btn btn-primary btn-sm">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </a>
-                                                        <form action="{{ route('indicator.destroy', $indicator->id) }}"
-                                                            method="POST" style="display:inline;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    </td>
+                                                    <td colspan="6" class="text-center text-muted">No data available.</td>
                                                 </tr>
-                                            @endforeach
+                                            @endif
                                         </tbody>
                                     </table>
                                 </div>

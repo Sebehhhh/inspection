@@ -15,47 +15,64 @@ class IndicatorController extends Controller
 {
     public function importExcel(Request $request)
     {
-        $request->validate([
-            'file' => 'required|mimes:xlsx,csv',
-        ]);
+        try {
+            $request->validate([
+                'file' => 'required|mimes:xlsx,csv',
+            ]);
 
-        Excel::import(new class implements ToModel, WithHeadingRow {
-            public function model(array $row)
-            {
-                return new Indicator([
-                    // 'id'           => $row['id'], // Menggunakan ID dari file Excel
-                    'equipment_id' => $row['equipment_id'],
-                    'name'         => $row['name'],
-                    'unit'         => $row['unit'],
-                    'baseline'     => $row['baseline'],
-                    'created_at'   => now(),
-                    'updated_at'   => now(),
-                ]);
+            Excel::import(new class implements ToModel, WithHeadingRow {
+                public function model(array $row)
+                {
+                    try {
+                        if (!isset($row['equipment_id'], $row['name'], $row['unit'], $row['baseline'])) {
+                            throw new \Exception("Format file Excel tidak sesuai. Pastikan kolom: 'equipment_id', 'name', 'unit', dan 'baseline' tersedia.");
+                        }
+
+                        return new Indicator([
+                            'equipment_id' => $row['equipment_id'],
+                            'name'         => $row['name'],
+                            'unit'         => $row['unit'],
+                            'baseline'     => $row['baseline'],
+                            'created_at'   => now(),
+                            'updated_at'   => now(),
+                        ]);
+                    } catch (\Exception $e) {
+                        session()->flash('error', $e->getMessage());
+                        return null;
+                    }
+                }
+            }, $request->file('file'));
+
+            return redirect()->route('indicator.index');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            $errorMessage = "Gagal mengimpor data:\n";
+            foreach ($failures as $failure) {
+                $errorMessage .= "Baris " . $failure->row() . ": " . implode(', ', $failure->errors()) . "\n";
             }
-        }, $request->file('file'));
-
-        return redirect()->route('indicator.index')->with('success', 'Indicator data imported successfully.');
+            return redirect()->route('indicator.index')->with('error', $errorMessage);
+        } catch (\Exception $e) {
+            return redirect()->route('indicator.index')->with('error', 'Terjadi kesalahan saat mengimpor data. Pastikan format file Excel sesuai.');
+        }
     }
 
     public function index(Request $request)
     {
-        // Ambil semua equipment untuk dropdown filter
-        $allEquipments = Equipment::all();
+        try {
+            $allEquipments = Equipment::all();
+            $query = Indicator::query();
 
-        // Buat query indikator
-        $query = Indicator::query();
+            if ($request->filled('equipment_id')) {
+                $decryptedEquipmentId = Crypt::decrypt($request->input('equipment_id'));
+                $query->where('equipment_id', $decryptedEquipmentId);
+            }
 
-        // Jika ada parameter equipment_id terenkripsi, lakukan dekripsi dan filter
-        if ($request->filled('equipment_id')) {
+            $indicators = $query->orderBy('equipment_id', 'asc')->paginate(10);
 
-            $decryptedEquipmentId = Crypt::decrypt($request->input('equipment_id'));
-            $query->where('equipment_id', $decryptedEquipmentId);
+            return view('c_panel.indicators.index', compact('indicators', 'allEquipments'));
+        } catch (\Exception $e) {
+            return redirect()->route('indicator.index')->with('error', 'Terjadi kesalahan saat mengambil data.');
         }
-
-        // Ambil indikator dengan pagination 10 per halaman
-        $indicators = $query->paginate(10);
-
-        return view('c_panel.indicators.index', compact('indicators', 'allEquipments'));
     }
 
 
@@ -67,15 +84,19 @@ class IndicatorController extends Controller
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name'         => 'required|string|max:255',
-            'equipment_id' => 'required|integer',
-            'unit'         => 'required|string|max:50',
-            'baseline'     => 'required|numeric',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'name'         => 'required|string|max:255',
+                'equipment_id' => 'required|integer',
+                'unit'         => 'required|string|max:50',
+                'baseline'     => 'required|numeric',
+            ]);
 
-        Indicator::create($validatedData);
-        return redirect()->route('indicator.index')->with('success', 'Indicator created successfully.');
+            Indicator::create($validatedData);
+            return redirect()->route('indicator.index')->with('success', 'Indicator created successfully.');
+        } catch (\Exception $e) {
+            abort(500, 'Internal Server Error');
+        }
     }
 
     public function edit($encryptedId)
@@ -88,20 +109,28 @@ class IndicatorController extends Controller
 
     public function update(Request $request, Indicator $indicator)
     {
-        $validatedData = $request->validate([
-            'name'         => 'required|string|max:255',
-            'equipment_id' => 'required|integer',
-            'unit'         => 'required|string|max:50',
-            'baseline'     => 'required|numeric',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'name'         => 'required|string|max:255',
+                'equipment_id' => 'required|integer',
+                'unit'         => 'required|string|max:50',
+                'baseline'     => 'required|numeric',
+            ]);
 
-        $indicator->update($validatedData);
-        return redirect()->route('indicator.index')->with('success', 'Indicator updated successfully.');
+            $indicator->update($validatedData);
+            return redirect()->route('indicator.index')->with('success', 'Indicator updated successfully.');
+        } catch (\Exception $e) {
+            abort(500, 'Internal Server Error');
+        }
     }
 
     public function destroy(Indicator $indicator)
     {
-        $indicator->delete();
-        return redirect()->route('indicator.index')->with('success', 'Indicator deleted successfully.');
+        try {
+            $indicator->delete();
+            return redirect()->route('indicator.index')->with('success', 'Indicator deleted successfully.');
+        } catch (\Exception $e) {
+            abort(500, 'Internal Server Error');
+        }
     }
 }
