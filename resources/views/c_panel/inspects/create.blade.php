@@ -79,9 +79,11 @@
                                                         <td>{{ $indicator->unit }}</td>
                                                         <td>{{ $indicator->baseline }}</td>
                                                         <td>
-                                                            <input type="number"
+                                                            <input type="text"
                                                                 name="actual_values[{{ $indicator->id }}]"
                                                                 class="form-control" placeholder="Enter actual value"
+                                                                pattern="[0-9]+([,\.][0-9]+)?"
+                                                                inputmode="decimal"
                                                                 value="{{ old('actual_values.' . $indicator->id) }}">
                                                         </td>
                                                     </tr>
